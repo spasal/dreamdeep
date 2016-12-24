@@ -1,0 +1,10 @@
+env is suddenly corrupted
+graphic driver
+opencv installation --> caution
+
+streaming video + not parallezized application
+https://blog.miguelgrinberg.com/post/video-streaming-with-flask
+http://stackoverflow.com/questions/27402949/flask-dev-server-hangs-without-threading-true
+http://stackoverflow.com/questions/31069318/video-streaming-using-flask-with-raspi-camera
+
+when reloading --> opencv im error
