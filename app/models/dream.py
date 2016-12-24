@@ -16,37 +16,30 @@ class Dream(object):
     """
 
     def __init__(self, data_dir_loc):
-        self.__initializeParameters(data_dir_loc)
-        self.__downloadInceptionIfNotExist(self.__url, self.__data_dir)
-        self.__createTFSessionAndModel(self.__data_dir, self.__model_fn)
+        self.__initialize_parameters(data_dir_loc)
+        self.__download_inception_if_not_exist(self.__url, self.__data_dir)
+        self.__create_TF_session_and_model(self.__data_dir, self.__model_fn)
 
         self.__resize = self.__tffunc(np.float32, np.int32)(self.__resize)
+
 
     # CORE FUNCTIONS
     # 0 render the deep dream
     def render_deepdream(self, layer, frm,
                          iter_n=10, step=1.5, octave_n=4, octave_scale=1.4):
 
-        print("layer: %s" % layer)
-        t_obj = self.getSquaredTLayer(layer)
-        print("t_obj: %s" % t_obj)
-        print("before reduce mean")
+        t_obj = self.__get_squared_t_layer(layer)
         t_score = tf.reduce_mean(t_obj)  # define optimazation objective
-        print("t_score")
-        t_grad = tf.gradients(t_score, self.__t_input)[
-            0]  # the power of automation
+        t_grad = tf.gradients(t_score, self.__t_input)[0]  # the power of automation
         frm = np.float32(frm)
 
         # split the image into a number of octaves
-        frm0 = frm
+        frm0 = frm.copy()
         octaves = []
         for i in range(octave_n - 1):
             hw = frm0.shape[:2]
-            # print('hw: ', hw)
             lo = self.__resize(frm0, np.int32(np.float32(hw) / octave_scale))
-            # print('lo: ', lo)
             hi = frm0 - self.__resize(lo, hw)
-            # print('li: ', hi)
             frm0 = lo
             octaves.append(hi)
 
@@ -86,22 +79,27 @@ class Dream(object):
                 grad[y:y + sz, x:x + sz] = g
         return np.roll(np.roll(grad, -sx, 1), -sy, 0)
 
+
     # GET/SET PUBLIC PROPERTIES
-    def getLayers(self):
-        print(self.__layers_backup)
+    def get_default_values(self):
+        print()
+
+    def get_featured_layers(self):
         return self.__layers
 
-    def getLayer(self):
+    def get_all_layers(self):
+        return self.__layers_backup
+
+    def get_layer(self):
         return self.__layer
 
-    def setLayer(self, layer=None):
+    def set_layer(self, layer=None):
         if layer is None:
-            print('setting default layer')
             self.__layer = self.__default_layer
         else:
             self.__layer = layer
 
-    def setNextLayer(self):
+    def set_next_layer(self):
         layers, layer = self.getLayers(), self.getLayer()
         index = layers.index(layer) + 1
 
@@ -110,35 +108,24 @@ class Dream(object):
 
         if newlayer:
             print(newlayer)
-            self.setLayer(newlayer)
+            self.set_layer(newlayer)
 
-    def setPreviousLayer(self):
+    def set_previous_layer(self):
         layers, layer = self.getLayers(), self.getLayer()
         index = layers.index(layer) - 1
         newlayer = layers[index]
         if newlayer:
             print(newlayer)
-            self.setLayer(newlayer)
+            self.set_layer(newlayer)
 
 
-    def getSquaredTLayer(self, layername):
+    def __get_squared_t_layer(self, layername):
         return tf.square(self.__T(layername))
 
-    def getChannels(self):
-        return self.feature_nums
 
-    def getChannel(self):
-        return self.__channel
-
-    def setChannel(self, channel=None):
-        if channel is None:
-            self.__channel = self.__default_channel
-        else:
-            self.__channel = channel
-
-    # PREPARATION FUNCTIONS
+    # INIT FUNCTIONS
     # 0 init parameters
-    def __initializeParameters(self, data_dir_loc):
+    def __initialize_parameters(self, data_dir_loc):
         # parameters to download inception
         self.__url = 'https://storage.googleapis.com/download.tensorflow.org/models/inception5h.zip'
         self.__data_dir = data_dir_loc
@@ -152,7 +139,7 @@ class Dream(object):
         # self.__resize = self.__tffunc(np.float32, np.int32)(self.__resize)
 
     # 1 download Inception zip if not exist yet and extract file
-    def __downloadInceptionIfNotExist(self, url, data_dir):
+    def __download_inception_if_not_exist(self, url, data_dir):
         model_name = os.path.split(url)[-1]
         local_zip_file = os.path.join(data_dir, model_name)
 
@@ -167,7 +154,7 @@ class Dream(object):
                 zip_ref.extractall(data_dir)
 
     # 2 create TF session and load the model
-    def __createTFSessionAndModel(self, data_dir, model_fn):
+    def __create_TF_session_and_model(self, data_dir, model_fn):
         graph = tf.Graph()
         sess = tf.InteractiveSession(graph=graph)
 
@@ -193,6 +180,7 @@ class Dream(object):
         self.setLayer()
         print(self.getLayers())
         self.setChannel()
+
 
     # HELPER FUNCTIONS FOR TF GRAPH VISUALISATION
     # pylint: disable=unused-variable

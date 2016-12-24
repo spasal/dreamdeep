@@ -1,6 +1,6 @@
 from app.models import VideoCamera, Dream
 from flask import Response
-import time
+import time, json
 import cv2
 
 
@@ -20,19 +20,17 @@ class ViewModel(object):
     # PUBLIC CONTROLLERS OF VIDEO STREAM
     def start_dream(self, data):
         if not self.__is_locked:
-            print("is not locked 2")
             self.__is_locked = True
             self.__show_count_down = True
             self.__start_time = time.time()
+
+            self.__iterations = int(data['iteration'])
 
             self.__show_general = False
             self.__show_dream = False
 
     def reset_window(self):
-        print("whut")
-        print(self.__is_locked)
         if not self.__is_locked:
-            print("is not locked")
             self.__show_general = True
 
             self.__show_dream = False
@@ -63,12 +61,13 @@ class ViewModel(object):
             if self.__init_dream:
                 frame = camera.get_frame(True)
                 yield (b'--frame\r\n'
-                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+                   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+
                 frame = camera.get_frame(False)
                 dream_generator = Dream('resources/inception')
 
                 layer = dream_generator.getLayer()
-                frame_dream = dream_generator.render_deepdream(layer, frame, 10)
+                frame_dream = dream_generator.render_deepdream(layer, frame, self.__iterations)
                 frame_dream = camera.convert_to_jpeg(frame_dream)
                 self.__frame_dream = frame_dream
 
@@ -78,7 +77,6 @@ class ViewModel(object):
                 self.__init_dream = False
                 self.__show_dream = True
                 self.__is_locked = False
-                print("islocked = false")
 
 
             # COUNT DOWN
@@ -97,6 +95,9 @@ class ViewModel(object):
                 if resting <= 0:
                     self.__show_count_down = False
                     self.__init_dream = True
+                    frame = camera.get_frame(True)
+                    yield (b'--frame\r\n'
+                        b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
 
 
 vm = ViewModel()

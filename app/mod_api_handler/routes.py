@@ -14,13 +14,17 @@ http://codehandbook.org/python-flask-jquery-ajax-post/
 # @limit(requests=10, window=60, by="ip")
 def handle_post():
     data = request.get_json(force=True)
-    print('received data: ', data)
-    vm.start_dream("data")
+    vm.start_dream(data)
     return json.dumps({'status': 'OK'})  # ,'data':data})
 
 
 @app.route('/reset_view')
 def handle_reset():
-    print("received reset request")
     vm.reset_window()
     return json.dumps({'status': 'OK'})
+
+
+@app.route('/default')
+def handle_default():
+    data = json.dumps({"iteration": "10"})
+    return data

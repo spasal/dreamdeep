@@ -1,9 +1,26 @@
 $(function () {
 
+   // load default values
+   $.ajax({
+      type: "GET",
+      contentType: "application/json; charset=utf-8",
+      url: '/api/default',
+      success: function(response) {
+        var obj = jQuery.parseJSON(response);
+
+        $("#iteration").val(obj.iteration)
+      },
+      error: function(error){
+        console.log('error: ' + error)
+      }
+    });
+
+   
+   // post updates
    $("#start_dream").click(function() {
-    console.log($("#iteration").value)
+    console.log($("#iteration").val())
    	data = {
-   		iteration: "val1",
+   		iteration: $("#iteration").val(),
      	test2: "val2"
    	}
 
