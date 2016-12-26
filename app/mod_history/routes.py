@@ -43,20 +43,14 @@ def __get_item(path, id):
         return None
 
 def __save_item(userdata):
-    print("saving item")
     path = userdata["path"]
-    print(path)
     userdata = json.dumps(userdata)
-    print(userdata)
     exif_ifd = {piexif.ExifIFD.UserComment : userdata}
-    print(exif_ifd)
     exif_dict = {"Exif": exif_ifd}
-    print(exif_dict)
     exif_bytes = piexif.dump(exif_dict)
-    print(exif_bytes)
 
     im = Image.open(path)
-    im.save(path, exif_bytes)
+    im.save(path, exif=exif_bytes)
 
 
 @app.route('/history')

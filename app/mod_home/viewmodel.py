@@ -128,7 +128,22 @@ class ViewModel(object):
         exif_dict = {"Exif": exif_ifd}
         exif_bytes = piexif.dump(exif_dict)
 
+        print(exif_dict)
+        print(exif_bytes)
+
         im = Image.open(path)
+        im.save(path, exif=exif_bytes)
+
+        im = Image.open(path)
+
+        date = str(datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S"))
+        timestamp = fileName[:-4]
+        userdata = json.dumps({'id': fileName, 'path': path, 'layer': layer, 'iterations': iterations, 'timestamp': timestamp, 'date_time': date, 'is_favorite': False})
+
+        exif_ifd = {piexif.ExifIFD.UserComment : userdata}
+        exif_dict = {"Exif": exif_ifd}
+        exif_bytes = piexif.dump(exif_dict)
+
         im.save(path, exif=exif_bytes)
 
 
