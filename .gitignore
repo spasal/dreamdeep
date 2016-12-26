@@ -3,8 +3,6 @@ __pycache__/
 *.py[cod]
 *.pyc
 
-clean_py.sh
-upgrade-packages.py
 tests/*
 # env/lib/python3.5/site-packages/tensorflow/
 # __pywrap__tensorflow.so
