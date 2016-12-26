@@ -26,3 +26,6 @@ http://cheng.logdown.com/posts/2015/06/14/sublime3-install-python-linters
 
 https://pypi.python.org/pypi/piexif
 
+http://pycoder.net/bospy/presentation.html#bonus-material
+http://codehandbook.org/python-flask-jquery-ajax-post/
+

@@ -3,6 +3,7 @@ from flask import Response
 import time, os, json
 from PIL import Image
 import piexif, datetime
+from app.common import file_io
 import cv2
 
 
@@ -35,6 +36,7 @@ class ViewModel(object):
     def reset_window(self):
         if not self.__is_locked:
             self.__show_general = True
+            self.__start_time = time.time()
 
             self.__show_dream = False
             self.__show_count_down = False
@@ -59,6 +61,7 @@ class ViewModel(object):
                 frame = camera.get_frame()
                 yield (b'--frame\r\n'
                     b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+
 
             # SHOW THE RESULT
             if self.__show_dream:
@@ -86,7 +89,6 @@ class ViewModel(object):
                 self.__show_dream = True
                 self.__save_dream(self.__frame_dream, layer, self.__iterations)
                 self.__is_locked = False
-                print("done")
 
 
             # COUNT DOWN
@@ -109,42 +111,21 @@ class ViewModel(object):
                     yield (b'--frame\r\n'
                         b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
 
+
     def __save_dream(self, frame_dream, layer, iterations):
         # get path and filename
-        fileName = str(time.time()) + ".jpg"
+        filename = str(time.time()) + ".jpg"
         path = os.path.join(os.getcwd(), "resources", "static","uploads", "history", fileName)
 
         # save image
-        output = open(path, "wb")
-        output.write(frame_dream)
-        output.close()
+        file_io.save_file(path, frame_dream)
 
-        # write custom metadata
+        # save metadata to jpeg
         date = str(datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S"))
-        timestamp = fileName[:-4]
-        userdata = json.dumps({'id': fileName, 'path': path, 'layer': layer, 'iterations': iterations, 'timestamp': timestamp, 'date_time': date, 'is_favorite': False})
+        timestamp = filename[:-4]
+        userdata = {'id': filename, 'path': path, 'layer': layer, 'iterations': iterations, 'timestamp': timestamp, 'date_time': date, 'is_favorite': False}
 
-        exif_ifd = {piexif.ExifIFD.UserComment : userdata}
-        exif_dict = {"Exif": exif_ifd}
-        exif_bytes = piexif.dump(exif_dict)
-
-        print(exif_dict)
-        print(exif_bytes)
-
-        im = Image.open(path)
-        im.save(path, exif=exif_bytes)
-
-        im = Image.open(path)
-
-        date = str(datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S"))
-        timestamp = fileName[:-4]
-        userdata = json.dumps({'id': fileName, 'path': path, 'layer': layer, 'iterations': iterations, 'timestamp': timestamp, 'date_time': date, 'is_favorite': False})
-
-        exif_ifd = {piexif.ExifIFD.UserComment : userdata}
-        exif_dict = {"Exif": exif_ifd}
-        exif_bytes = piexif.dump(exif_dict)
-
-        im.save(path, exif=exif_bytes)
+        file_io.save_exif_file(userdata)
 
 
 vm = ViewModel()

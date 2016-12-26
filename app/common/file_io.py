@@ -70,6 +70,10 @@ def insert_or_delete_file(userdata, destination_path):
     if os.path.isfile(upload_path):
         os.remove(upload_path)
     else:
-        print(original_path)
-        print(upload_path)
         shutil.copy2(original_path, upload_path)
+
+
+def save_file(path, file):
+    output = open(path, 'wb')
+    output.write(file)
+    output.close()
