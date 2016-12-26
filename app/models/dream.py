@@ -177,10 +177,7 @@ class Dream(object):
         self.__layers_backup = [l.replace('import/', '') for l in layers]
         self.__layers = ["conv2d2", "mixed3a", "mixed3a_pool", "mixed3b", "mixed4a", "mixed4b", "mixed4c", "mixed4d", "mixed4e", "mixed5a"]
         self.__feature_nums = feature_nums
-        self.setLayer()
-        print(self.getLayers())
-        self.setChannel()
-
+        self.set_layer()
 
     # HELPER FUNCTIONS FOR TF GRAPH VISUALISATION
     # pylint: disable=unused-variable

@@ -1,2 +1,2 @@
 from app.models.camera import VideoCamera
-from app.models.deepdream import Dream
+from app.models.dream import Dream

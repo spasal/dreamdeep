@@ -15,7 +15,7 @@ http://codehandbook.org/python-flask-jquery-ajax-post/
 def handle_post():
     data = request.get_json(force=True)
     vm.start_dream(data)
-    return json.dumps({'status': 'OK'})  # ,'data':data})
+    return json.dumps({'status': 'OK'})
 
 
 @app.route('/reset_view')
@@ -26,5 +26,4 @@ def handle_reset():
 
 @app.route('/default')
 def handle_default():
-    data = json.dumps({"iteration": "10"})
-    return data
+    return vm.get_default_control_values()

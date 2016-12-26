@@ -37,30 +37,30 @@
 			<!-- tooltip & favorite -->
 		</div>
 
-		<button class="btn btn-primary" id="start_dream">Dream</button>
-					<button class="btn btn-primary" id="retry_dream">Retry</button>
-
-		
-		<form>
-			<div class="form-group">
-				<button class="btn btn-primary" id="start_dream">Dream</button>
-					<button class="btn btn-primary" id="retry_dream">Retry</button>
-					<button type="submit" class="btn btn-primary" id="reset_vars">Reset</button>
+		<div class="row">
+			<div class="col-md-12">
+				<button type="submit" class="btn btn-primary" id="start_dream">Dream</button>
+				<button type="submit" class="btn btn-primary" id="retry_dream">Retry</button>
+				<button type="submit" class="btn btn-primary" id="reset_vars">Reset</button>
 			</div>
+		</div>
 
-			<div class="form-group">
-				<label for="iteration">Iterations: </label>
-				<input type="text" class="form-control" id="iteration" placeholder="5-30 iterations">
+		<div class="row">
+			<div class="col-md-12">
+				<div>
+					<label for="iteration">Iterations: </label>
+					<input type="text" class="form-control" id="iteration" placeholder="5-30 iterations">
+				</div>
+				<div>
+					<label for="fet_layers">Featured Layers: </label>
+					<input type="text" class="form-control" id="fet_layers" placeholder="5-30 iterations">
+				</div>
+				<div>
+					<label for="all_layers">All Layers: </label>
+					<input type="text" class="form-control" id="all_layers" placeholder="5-30 iterations">
+				</div>
 			</div>
-
-			<div class="form-group">
-				<label for="featured_layers">Featured layers</label>
-			</div>
-
-			<div class="form-group">
-				<label for="featured_layers">All layers</label>
-			</div>
-		</form>
+		</div>
 	</div>
 
 	<script type="text/javascript" src="{{ url_for('static', filename='js/jquery-2.2.3.min.js') }}"></script>

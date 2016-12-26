@@ -1,6 +1,6 @@
 from app.models import VideoCamera, Dream
 from flask import Response
-import time, json
+import time, os, json
 import cv2
 
 
@@ -36,6 +36,10 @@ class ViewModel(object):
             self.__show_dream = False
             self.__show_count_down = False
 
+    def get_default_control_values(self):
+        data = json.dumps({"iteration": "10"})
+        return data
+
 
     # GET VIDEO STREAM
     def video_feed(self):
@@ -66,16 +70,17 @@ class ViewModel(object):
                 frame = camera.get_frame(False)
                 dream_generator = Dream('resources/inception')
 
-                layer = dream_generator.getLayer()
+                layer = dream_generator.get_layer()
                 frame_dream = dream_generator.render_deepdream(layer, frame, self.__iterations)
                 frame_dream = camera.convert_to_jpeg(frame_dream)
-                self.__frame_dream = frame_dream
 
                 yield (b'--frame\r\n'
                          b'Content-Type: image/jpeg\r\n\r\n' + frame_dream + b'\r\n\r\n')
 
+                self.__frame_dream = frame_dream
                 self.__init_dream = False
                 self.__show_dream = True
+                self.__save_dream(self.__frame_dream)
                 self.__is_locked = False
 
 
@@ -98,6 +103,15 @@ class ViewModel(object):
                     frame = camera.get_frame(True)
                     yield (b'--frame\r\n'
                         b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+
+    def __save_dream(self, frame_dream):
+        fileName = str(time.time()) + ".jpg"
+        path = os.path.join(os.getcwd(), "resources", "static","uploads", "history", fileName)
+        print(path)
+
+        output = open(path, "wb")
+        output.write(frame_dream)
+        output.close()
 
 
 vm = ViewModel()
