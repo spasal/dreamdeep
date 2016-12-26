@@ -2,6 +2,7 @@ from app.models import VideoCamera, Dream
 from app.common import file_io
 from flask import Response
 import time, os, datetime
+import json
 import cv2
 
 
@@ -16,6 +17,7 @@ class ViewModel(object):
         self.__is_locked = False
 
         self.__count = 3
+        self.__layers = ""
 
 
     # PUBLIC CONTROLLERS OF VIDEO STREAM
@@ -26,6 +28,7 @@ class ViewModel(object):
             self.__start_time = time.time()
 
             self.__iterations = int(data['iteration'])
+            print(self.__dream_generator.get_layer())
 
             self.__show_general = False
             self.__show_dream = False
@@ -39,7 +42,9 @@ class ViewModel(object):
             self.__show_count_down = False
 
     def get_default_control_values(self):
-        data = json.dumps({"iteration": "10"})
+        print("calling to get values")
+        data = json.dumps({"iteration": "10", "layers": self.__layers})
+        print(self.__layers)
         return data
 
 
@@ -51,6 +56,8 @@ class ViewModel(object):
     # CORE VM DREAM LOGIC
     def __gen(self, camera):
         dream_generator = Dream('resources/inception')
+        self.__layers = dream_generator.get_featured_layers()
+        print("after init dream_generator")
 
         while True:
             # REGULAR STREAM
