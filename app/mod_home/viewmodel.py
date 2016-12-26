@@ -1,7 +1,10 @@
 from app.models import VideoCamera, Dream
 from flask import Response
 import time, os, json
+from PIL import Image
+import piexif, datetime
 import cv2
+
 
 
 class ViewModel(object):
@@ -48,6 +51,8 @@ class ViewModel(object):
 
     # CORE VM DREAM LOGIC
     def __gen(self, camera):
+        dream_generator = Dream('resources/inception')
+
         while True:
             # REGULAR STREAM
             if self.__show_general:
@@ -68,7 +73,6 @@ class ViewModel(object):
                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
 
                 frame = camera.get_frame(False)
-                dream_generator = Dream('resources/inception')
 
                 layer = dream_generator.get_layer()
                 frame_dream = dream_generator.render_deepdream(layer, frame, self.__iterations)
@@ -80,8 +84,9 @@ class ViewModel(object):
                 self.__frame_dream = frame_dream
                 self.__init_dream = False
                 self.__show_dream = True
-                self.__save_dream(self.__frame_dream)
+                self.__save_dream(self.__frame_dream, layer, self.__iterations)
                 self.__is_locked = False
+                print("done")
 
 
             # COUNT DOWN
@@ -104,14 +109,30 @@ class ViewModel(object):
                     yield (b'--frame\r\n'
                         b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
 
-    def __save_dream(self, frame_dream):
+    def __save_dream(self, frame_dream, layer, iterations):
+        # get path and filename
         fileName = str(time.time()) + ".jpg"
         path = os.path.join(os.getcwd(), "resources", "static","uploads", "history", fileName)
-        print(path)
 
+        # save image
         output = open(path, "wb")
         output.write(frame_dream)
         output.close()
+
+        # write custom metadata
+        date = str(datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S"))
+        timestamp = datetime.datetime.now().timestamp()
+        userdata = json.dumps({'layer': layer, 'iterations': iterations, 'path': path, 'timestamp': timestamp, 'is_favorite': False})
+        
+
+        exif_ifd = {piexif.ExifIFD.DateTimeOriginal: date,
+                    piexif.ExifIFD.UserComment : userdata}
+
+        exif_dict = {"Exif":exif_ifd}
+        exif_bytes = piexif.dump(exif_dict)
+
+        im = Image.open(path)
+        im.save(path, exif=exif_bytes)
 
 
 vm = ViewModel()

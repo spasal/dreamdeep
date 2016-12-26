@@ -10,3 +10,4 @@ tests/*
 # __pywrap__tensorflow.so
 env/*
 resources/inception/*
+resources/static/uploads/*

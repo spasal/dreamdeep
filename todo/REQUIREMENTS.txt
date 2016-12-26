@@ -23,3 +23,6 @@ sublime text 3
 https://realpython.com/blog/python/setting-up-sublime-text-3-for-full-stack-python-development/
 http://cheng.logdown.com/posts/2015/06/14/sublime3-install-python-linters
 
+
+https://pypi.python.org/pypi/piexif
+

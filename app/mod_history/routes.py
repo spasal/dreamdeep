@@ -1,11 +1,10 @@
 from app.mod_history import history_blueprint as app
-from flask import render_template
+from flask import render_template, redirect, url_for
 import os, sys, datetime
+import piexif, json
 
-@app.route('/history')
-def index():
-    print("defining history template")
 
+def __get_history_list():
     upload_path = sys.path[0] + '/resources/static/uploads/history'
 
     # get all files
@@ -17,12 +16,45 @@ def index():
     # build history
     history = []
     for file in files:
-        timestamp = float(os.path.splitext(file)[0])
-        time = datetime.datetime.fromtimestamp(timestamp)
+        filepath = os.path.join(upload_path, file)
+        exif_dict = piexif.load(filepath)
 
-        history.append({'image': file, 'time': time, 'id': timestamp})
+        usercomment = exif_dict["Exif"][37510].decode("utf-8")
+        usercomment = json.loads(usercomment)
+        date_time = exif_dict["Exif"][36867].decode("utf-8")
 
-    history = sorted(history, key=lambda p: p['time'], reverse=True)
+        layer = usercomment["layer"]
+        path = usercomment["path"]
+        iterations = usercomment["iterations"]
+        timestamp = usercomment["timestamp"]
+        is_favorite = usercomment["is_favorite"]
+
+        history.append(
+            {'id': timestamp, 'image': file, 'time': date_time, 'layer': layer, 'iterations': iterations, 'path': path, 'is_favorite': is_favorite
+            }
+        )
+
+    return history
+
+
+@app.route('/history')
+def index():
+    history = __get_history_list()
     print(history)
-
+    history = sorted(history, key=lambda p: p['time'], reverse=True)
     return render_template('history.html', history=history)
+
+
+@app.route('/history/del/<id>')
+def delete(id):
+    print(id)
+    print(redirect(url_for('mod_history.index')))
+    return redirect(url_for('mod_history.index'))
+
+
+@app.route('/history/fav/<id>')
+def favorite(id):
+    # re-write tag to know if is favorite
+    print(id)
+    print(redirect(url_for('mod_history.index')))
+    return redirect(url_for('mod_history.index'))
