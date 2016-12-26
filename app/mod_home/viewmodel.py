@@ -1,11 +1,8 @@
 from app.models import VideoCamera, Dream
-from flask import Response
-import time, os, json
-from PIL import Image
-import piexif, datetime
 from app.common import file_io
+from flask import Response
+import time, os, datetime
 import cv2
-
 
 
 class ViewModel(object):
