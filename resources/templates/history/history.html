@@ -31,13 +31,13 @@
 		{% for request in history: %}
 			<div class="col-md-6 col-sm-6">
 				<div class="thumbnail">
-					<img src="{{ url_for('static', filename='uploads/history/') }}{{ request['image'] }}" alt="">
+					<img src="{{ url_for('static', filename='uploads/history/') }}{{ request['id'] }}" alt="">
 					<div class="caption text-center">
 						<b>{{ request['time'] }}</b>
 					</div>
 					<div class="text-center">
-						<button>favorite</button>
-						<button>delete</button>
+						<a href="/history/fav/{{ request['id'] }}"><button>favorite</button></a>
+						<a href="/history/del/{{ request['id'] }}"><button>delete</button></a>
 					</div>
 				</div>
 			</div>

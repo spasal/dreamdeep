@@ -1,11 +1,12 @@
 from app.mod_history import history_blueprint as app
 from flask import render_template, redirect, url_for
 import os, sys, datetime
+from PIL import Image
 import piexif, json
 
 
-def __get_history_list():
-    upload_path = sys.path[0] + '/resources/static/uploads/history'
+def __get_items(path):
+    upload_path = sys.path[0] + path
 
     # get all files
     files = []
@@ -14,47 +15,71 @@ def __get_history_list():
         break
 
     # build history
-    history = []
+    items = []
     for file in files:
-        filepath = os.path.join(upload_path, file)
-        exif_dict = piexif.load(filepath)
+        file_path = os.path.join(upload_path, file)
+        exif_dict = piexif.load(file_path)
+        print('getting files', file_path)
 
         usercomment = exif_dict["Exif"][37510].decode("utf-8")
         usercomment = json.loads(usercomment)
-        date_time = exif_dict["Exif"][36867].decode("utf-8")
 
-        layer = usercomment["layer"]
-        path = usercomment["path"]
-        iterations = usercomment["iterations"]
-        timestamp = usercomment["timestamp"]
-        is_favorite = usercomment["is_favorite"]
+        items.append(usercomment)
 
-        history.append(
-            {'id': timestamp, 'image': file, 'time': date_time, 'layer': layer, 'iterations': iterations, 'path': path, 'is_favorite': is_favorite
-            }
-        )
+    return items
 
-    return history
+
+def __get_item(path, id):
+    upload_path = sys.path[0] + path
+    file_path = os.path.join(upload_path, id)
+    try:
+        exif_dict = piexif.load(file_path)
+
+        usercomment = exif_dict["Exif"][37510].decode("utf-8")
+        usercomment = json.loads(usercomment)
+
+        return usercomment
+    except:
+        return None
+
+def __save_item(userdata):
+    print("saving item")
+    path = userdata["path"]
+    print(path)
+    userdata = json.dumps(userdata)
+    print(userdata)
+    exif_ifd = {piexif.ExifIFD.UserComment : userdata}
+    print(exif_ifd)
+    exif_dict = {"Exif": exif_ifd}
+    print(exif_dict)
+    exif_bytes = piexif.dump(exif_dict)
+    print(exif_bytes)
+
+    im = Image.open(path)
+    im.save(path, exif_bytes)
 
 
 @app.route('/history')
 def index():
-    history = __get_history_list()
-    print(history)
-    history = sorted(history, key=lambda p: p['time'], reverse=True)
+    history = __get_items('/resources/static/uploads/history')
+    history = sorted(history, key=lambda p: p['timestamp'], reverse=True)
     return render_template('history.html', history=history)
 
 
 @app.route('/history/del/<id>')
 def delete(id):
-    print(id)
-    print(redirect(url_for('mod_history.index')))
+    item = __get_item('/resources/static/uploads/history', id)
+    if item:
+        os.remove(item["path"])
+
     return redirect(url_for('mod_history.index'))
 
 
 @app.route('/history/fav/<id>')
 def favorite(id):
-    # re-write tag to know if is favorite
-    print(id)
-    print(redirect(url_for('mod_history.index')))
+    item = __get_item('/resources/static/uploads/history', id)
+    if item:
+        item["is_favorite"] = not item["is_favorite"]
+        __save_item(item)
+
     return redirect(url_for('mod_history.index'))
