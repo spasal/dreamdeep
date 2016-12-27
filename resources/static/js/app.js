@@ -1,4 +1,10 @@
 $(function () {
+  //on-close
+  window.onbeforeunload = closing;
+  function closing(){
+    $("#cam_stream").atr('src','')
+  }
+
   // get data untill layers are not empty
   var received_layers = false;
   function getDefaultValues(){
@@ -74,5 +80,4 @@ $(function () {
 
     });
    });
-
 });

@@ -1,4 +1,4 @@
-from app.models import VideoCamera, Dream
+from app.models import VideoCamera, Dream, detect_faces
 from app.common import file_io
 from flask import Response
 import time, os, datetime
@@ -30,7 +30,6 @@ class ViewModel(object):
             self.__start_time = time.time()
 
             self.__iterations = int(data['iteration'])
-            print(self.__dream_generator.get_layer())
 
             self.__show_general = False
             self.__show_dream = False
@@ -66,7 +65,9 @@ class ViewModel(object):
         while True:
             # REGULAR STREAM
             if self.__show_general:
-                frame = camera.get_frame()
+                frame = camera.get_frame(False)
+                has_faces, frame = detect_faces(frame)
+                frame = camera.convert_to_jpeg(frame)
                 yield (b'--frame\r\n'
                     b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
 
@@ -84,8 +85,8 @@ class ViewModel(object):
                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
 
                 frame = camera.get_frame(False)
-
                 layer = dream_generator.get_layer()
+
                 frame_dream = dream_generator.render_deepdream(layer, frame, self.__iterations)
                 frame_dream = camera.convert_to_jpeg(frame_dream)
 
@@ -123,7 +124,7 @@ class ViewModel(object):
     def __save_dream(self, frame_dream, layer, iterations):
         # get path and filename
         filename = str(time.time()) + ".jpg"
-        path = os.path.join(os.getcwd(), "resources", "static","uploads", "history", fileName)
+        path = os.path.join(os.getcwd(), "resources", "static","uploads", "history", filename)
 
         # save image
         file_io.save_file(path, frame_dream)
@@ -135,5 +136,5 @@ class ViewModel(object):
 
         file_io.save_exif_file(userdata)
 
-
+print("CREATING VM")
 vm = ViewModel()
