@@ -1,36 +1,37 @@
 $(function () {
   // get data untill layers are not empty
   var received_layers = false;
-  console.log("before while")
-  while(received_layers == false){
-    setTimeout(function() {
-         // load default values
-         $.ajax({
-            type: "GET",
-            contentType: "application/json; charset=utf-8",
-            url: '/api/default',
-            success: function(response) {
-              var obj = jQuery.parseJSON(response);
+  function getDefaultValues(){
+    if(received_layers == false){
+      $.ajax({
+        type: "GET",
+        contentType: "application/json; charset=utf-8",
+        url: '/api/default',
+        success: function(response) {
+          var obj = jQuery.parseJSON(response);
 
-              $("#iteration").val(obj.iteration)
-              $("#fet_layers").val(obj.layers)
+          if(obj.layers != ""){
+            console.log("layers are not ''")
+            received_layers = true
 
-              console.log(obj.layers)
+            $("#iteration").val(obj.iteration)
+            $("#fet_layers").val(obj.layers)
+            $("#all_layers").val(obj.all_layers)
+          }else{
+            console.log("layers are empty")
+            console.log(obj.layers)
+            setTimeout(getDefaultValues, 500);
+          }
+        },
+        error: function(error){
+          console.log('error: ' + error)
+          setTimeout(getDefaultValues, 500);
+        }
+      });
 
-              if(obj.layers != ""){
-                console.log("layers are not ''")
-                received_layers = true
-              }else{
-                console.log("layers are empty")
-                console.log(obj.layers)
-              }
-            },
-            error: function(error){
-              console.log('error: ' + error)
-            }
-          });
-    }, 500);
+    }
   }
+  setTimeout(getDefaultValues, 0);
 
    
    // post updates

@@ -17,7 +17,9 @@ class ViewModel(object):
         self.__is_locked = False
 
         self.__count = 3
+        self.__iterations = 10
         self.__layers = ""
+        self.__all_layers = ""
 
 
     # PUBLIC CONTROLLERS OF VIDEO STREAM
@@ -42,10 +44,12 @@ class ViewModel(object):
             self.__show_count_down = False
 
     def get_default_control_values(self):
-        print("calling to get values")
-        data = json.dumps({"iteration": "10", "layers": self.__layers})
-        print(self.__layers)
-        return data
+        data = {
+            "iteration": self.__iterations, 
+            "layers": self.__layers,
+            "all_layers": self.__all_layers
+        }
+        return json.dumps(data)
 
 
     # GET VIDEO STREAM
@@ -57,7 +61,7 @@ class ViewModel(object):
     def __gen(self, camera):
         dream_generator = Dream('resources/inception')
         self.__layers = dream_generator.get_featured_layers()
-        print("after init dream_generator")
+        self.__all_layers = dream_generator.get_all_layers()
 
         while True:
             # REGULAR STREAM
