@@ -9,11 +9,11 @@
 
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap-slider.min.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap-old.min.css') }}">
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
 
 </head>
 <body>
-	
 	<nav class="navbar navbar-default">
 		<div class="container">
 			<div class="navbar-header">
@@ -30,9 +30,8 @@
 
 	<div class="container" style="margin-top: 50px">
 		<div class="row">
-			<!-- image dream -->
 			<div class="col-md-12">
-				<img src="{{ url_for('mod_home.get_video_feed') }}" />
+				<img id="cam_stream" src="{{ url_for('mod_home.get_video_feed') }}" />
 			</div>
 			<!-- tooltip & favorite -->
 		</div>
@@ -46,27 +45,59 @@
 		</div>
 
 		<div class="row">
+		<div class="col-md-12"><h3>Dream parameters</h3></div>
 			<div class="col-md-12">
 				<div>
 					<label for="iteration">Iterations: </label>
 					<input type="text" class="form-control" id="iteration" placeholder="5-30 iterations">
 				</div>
+
+				<div class="row"></div>
+
+				<div>
+					<label for="layer">Selected layer: </label>
+					<input type="text" class="form-control" id="layer" placeholder="Your selected layer will come here">
+				</div>
+			</div>
+		</div>
+
+
+		<div class="row">
+			<div class="col-md-12"><h2>Layer selection interfaces</h2></div>
+			<div class="col-md-12"><h3>Interface 1</h3></div>
+			<div class="col-md-12">
 				<div>
 					<label for="fet_layers">Featured Layers: </label>
-					<input type="text" class="form-control" id="fet_layers" placeholder="5-30 iterations">
+					<!-- Example split danger button -->
+					<div class="btn-group">
+					  <button type="button" class="btn">Default</button>
+					  <button type="button" class="btn dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					    <span class="sr-only">Toggle Dropdown</span>
+					  </button>
+					  <div class="dropdown-menu dropdown-layers" id="dropdown-fet_layers">
+					    <div class="dropdown-item">Default</div>
+					  </div>
+					</div>
 				</div>
+
 				<div>
 					<label for="all_layers">All Layers: </label>
-					<input type="text" class="form-control" id="all_layers" placeholder="5-30 iterations">
+					<!-- Example split danger button -->
+					<div class="btn-group">
+					  <button type="button" class="btn">Default</button>
+					  <button type="button" class="btn dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					    <span class="sr-only">Toggle Dropdown</span>
+					  </button>
+					  <div class="dropdown-menu  dropdown-layers" id="dropdown-all_layers">
+					  </div>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 
-	<script type="text/javascript" src="{{ url_for('static', filename='js/jquery-2.2.3.min.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.1.1.min.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
-	<script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap-slider.min.js') }}"></script>
-
 	<script type="text/javascript" src="{{ url_for('static', filename='js/app.js') }}"></script>
 </body>
 </html>

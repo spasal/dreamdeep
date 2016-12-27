@@ -9,10 +9,12 @@ class VideoCamera(object):
         success = False
         while not success:
             success, image = self.video.read()
-            ret, jpeg = cv2.imencode('.jpg', image)
-            self.last_frame = jpeg.tobytes()
+            if success:
+                ret, jpeg = cv2.imencode('.jpg', image)
+                self.last_frame = jpeg.tobytes()
 
     def __del__(self):
+        print("DELETING VIDEO")
         self.video.release()
 
     def get_frame(self, is_jpeg=True):
@@ -21,6 +23,7 @@ class VideoCamera(object):
         while not success:
             success, image = self.video.read()
             if success:
+                image = cv2.flip(image, 1)
                 if is_jpeg:
                     ret, jpeg = cv2.imencode('.jpg', image)
                     jpeg = jpeg.tobytes()
