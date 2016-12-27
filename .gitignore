@@ -7,5 +7,5 @@ tests/*
 # env/lib/python3.5/site-packages/tensorflow/
 # __pywrap__tensorflow.so
 env/*
-resources/inception/*
+resources/data/inception/*
 resources/static/uploads/*
