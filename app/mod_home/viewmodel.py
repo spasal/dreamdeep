@@ -60,14 +60,14 @@ class ViewModel(object):
 
     # CORE VM DREAM LOGIC
     def __gen(self, camera):
-        dream_generator = Dream('resources/inception')
+        dream_generator = Dream('resources/app_data/inception')
         self.__layers = dream_generator.get_featured_layers()
         self.__all_layers = dream_generator.get_all_layers()
 
         while True:
             # REGULAR STREAM
             if self.__show_general:
-                frame = camera.get_frame(False)
+                ''''frame = camera.get_frame(False)
                 is_slideshow, frame = detect_faces(frame)
 
                 if not is_slideshow:
@@ -76,7 +76,10 @@ class ViewModel(object):
                         b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
                 else:
                     # put logic to show slideshow
-                    a = "a"
+                    a = "a"'''
+                frame = camera.get_frame()
+                yield (b'--frame\r\n'
+                        b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
 
 
             # SHOW THE RESULT
@@ -141,5 +144,5 @@ class ViewModel(object):
 
         file_io.save_exif_file(userdata)
 
-print("CREATING VM")
+
 vm = ViewModel()

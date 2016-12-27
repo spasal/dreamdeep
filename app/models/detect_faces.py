@@ -5,7 +5,7 @@ import time
 
 # face detection cascades
 __current_dir = os.path.dirname(__file__)
-__relative_path = '../../resources/cascades'
+__relative_path = '../../resources/app_data/cascades'
 __full_path = os.path.join(__current_dir, __relative_path)
 __face_cascade_path = os.path.join(__full_path, 'haarcascade_frontalface_default.xml')
 __alt_face_cascade_path = os.path.join(__full_path, 'haarcascade_profileface.xml')

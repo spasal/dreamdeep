@@ -2,7 +2,8 @@ $(function () {
   //on-close
   window.onbeforeunload = closing;
   function closing(){
-    $("#cam_stream").atr('src','')
+    alert("leaving page")
+    $("#cam_stream").attr('src','')
   }
 
   // get data untill layers are not empty
@@ -17,15 +18,10 @@ $(function () {
           var obj = jQuery.parseJSON(response);
 
           if(obj.layers != ""){
-            console.log("layers are not ''")
             received_layers = true
-
-            $("#iteration").val(obj.iteration)
-            $("#fet_layers").val(obj.layers)
-            $("#all_layers").val(obj.all_layers)
+            fillValues(obj.iteration, obj.layers, obj.all_layers)
           }else{
             console.log("layers are empty")
-            console.log(obj.layers)
             setTimeout(getDefaultValues, 500);
           }
         },
@@ -38,6 +34,28 @@ $(function () {
     }
   }
   setTimeout(getDefaultValues, 0);
+
+  function fillValues(iteration, fet_layers, all_layers){
+    $("#iteration").val(iteration)
+
+    $(fet_layers).each( function(index, item){
+      $("#dropdown-fet_layers").append('<a class="dropdown-item az"> ' + item + '</a>');
+    })
+
+    $(all_layers).each( function(index, item){
+      $("#dropdown-all_layers").append('<a class="dropdown-item az"> ' + item + '</a>');
+    })
+  }
+
+  $(".dropdown-layers a").click(function() {
+    console.log(this.id);
+    console.log($(this).val())
+  });
+
+  $(".az").click(function() {
+    console.log(this.id);
+    console.log($(this).val())
+  });
 
    
    // post updates
