@@ -62,9 +62,7 @@ class Dream(object):
 
     # 1 apply gradient ascend
     def __calc_grad_tiled(self, img, t_grad, tile_size=512):
-        '''Compute the value of tensor t_grad over the image in a tiled way.
-        Random shifts are applied to the image to blur tile boundaries over
-        multiple iterations.'''
+        '''Compute the value of tensor t_grad over the image in a tiled way. Random shifts are applied to the image to blur tile boundaries over multiple iterations.'''
         sz = tile_size
         h, w = img.shape[:2]
         sx, sy = np.random.randint(sz, size=2)
@@ -81,15 +79,16 @@ class Dream(object):
 
 
     # GET/SET PUBLIC PROPERTIES
-    def get_default_values(self):
-        print()
-
     def get_featured_layers(self):
         return self.__layers
 
     def get_all_layers(self):
         return self.__layers_backup
 
+    def get_default_layer(self):
+        return self.__default_layer
+
+    # these functions do we not need anymore
     def get_layer(self):
         return self.__layer
 
@@ -117,7 +116,7 @@ class Dream(object):
         if newlayer:
             print(newlayer)
             self.set_layer(newlayer)
-
+    # end of functions we don(t need anymore
 
     def __get_squared_t_layer(self, layername):
         return tf.square(self.__T(layername))

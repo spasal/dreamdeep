@@ -1,8 +1,8 @@
+from app.models import init_slideshow, get_slideshow_frame
 from app.models import VideoCamera, Dream, detect_faces
 from app.common import file_io
 from flask import Response
-import datetime
-import time
+import datetime, time
 import json
 import cv2
 import os
@@ -22,6 +22,7 @@ class ViewModel(object):
         self.__iterations = 10
         self.__layers = ""
         self.__all_layers = ""
+        self.__default_layer = ""
 
 
     # PUBLIC CONTROLLERS OF VIDEO STREAM
@@ -32,6 +33,7 @@ class ViewModel(object):
             self.__start_time = time.time()
 
             self.__iterations = int(data['iteration'])
+            self.__layer = str(data['layer'])
 
             self.__show_general = False
             self.__show_dream = False
@@ -49,7 +51,7 @@ class ViewModel(object):
             "iteration": self.__iterations,
             "layers": self.__layers,
             "all_layers": self.__all_layers,
-            "default_layer": "test"
+            "default_layer": self.__default_layer
         }
         return json.dumps(data)
 
@@ -64,11 +66,13 @@ class ViewModel(object):
         dream_generator = Dream('resources/app_data/inception')
         self.__layers = dream_generator.get_featured_layers()
         self.__all_layers = dream_generator.get_all_layers()
+        self.__default_layer = dream_generator.get_default_layer()
+        init_slideshow()
 
         while True:
             # REGULAR STREAM
             if self.__show_general:
-                ''''frame = camera.get_frame(False)
+                frame = camera.get_frame(False)
                 is_slideshow, frame = detect_faces(frame)
 
                 if not is_slideshow:
@@ -77,10 +81,10 @@ class ViewModel(object):
                         b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
                 else:
                     # put logic to show slideshow
-                    a = "a"'''
-                frame = camera.get_frame()
-                yield (b'--frame\r\n'
-                        b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+                    get_slideshow_frame()
+                ''''frame = camera.get_frame()
+                #yield (b'--frame\r\n'
+                        b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')'''
 
 
             # SHOW THE RESULT
@@ -96,9 +100,7 @@ class ViewModel(object):
                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
 
                 frame = camera.get_frame(False)
-                layer = dream_generator.get_layer()
-
-                frame_dream = dream_generator.render_deepdream(layer, frame, self.__iterations)
+                frame_dream = dream_generator.render_deepdream(self.__layer, frame, self.__iterations)
                 frame_dream = camera.convert_to_jpeg(frame_dream)
 
                 yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + frame_dream + b'\r\n\r\n')
@@ -106,7 +108,7 @@ class ViewModel(object):
                 self.__frame_dream = frame_dream
                 self.__init_dream = False
                 self.__show_dream = True
-                self.__save_dream(self.__frame_dream, layer, self.__iterations)
+                self.__save_dream(self.__frame_dream, self.__layer, self.__iterations)
                 self.__is_locked = False
 
 
@@ -145,5 +147,5 @@ class ViewModel(object):
 
         file_io.save_exif_file(userdata)
 
-
+print("INIT VM")
 vm = ViewModel()

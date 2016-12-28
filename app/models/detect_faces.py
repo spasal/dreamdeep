@@ -42,9 +42,7 @@ def detect_faces(frame):
     faces_front = __face_cascade.detectMultiScale(gray, 1.3, 5)
     faces_alt = __alt_face_cascade.detectMultiScale(gray, 1.3, 5)
 
-    has_face = False
-    if(faces_front != () or faces_alt != ()):
-        has_face = True
+    has_face = (faces_front != () or faces_alt != ())
 
     # running average of has_face
     __append_to_arr(__has_faces, has_face, __count)
@@ -54,7 +52,7 @@ def detect_faces(frame):
         __drawText(frame, 'Deep dreams are made of you')
 
     # add result to has_face_avg
-    __append_to_arr(__latest_has_faces, has_face, 2)
+    __append_to_arr(__latest_has_faces, has_face, __count)
 
     # check if slideshow should start
     slideshow = False
