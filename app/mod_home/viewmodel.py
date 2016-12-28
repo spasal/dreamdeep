@@ -48,7 +48,8 @@ class ViewModel(object):
         data = {
             "iteration": self.__iterations,
             "layers": self.__layers,
-            "all_layers": self.__all_layers
+            "all_layers": self.__all_layers,
+            "default_layer": "test"
         }
         return json.dumps(data)
 

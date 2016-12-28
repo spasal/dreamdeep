@@ -19,7 +19,8 @@ $(function () {
 
           if(obj.layers != ""){
             received_layers = true
-            fillValues(obj.iteration, obj.layers, obj.all_layers)
+            fillValues(obj.iteration, obj.layers, obj.all_layers, obj.default_layer);
+            initListeners();
           }else{
             console.log("layers are empty")
             setTimeout(getDefaultValues, 500);
@@ -35,27 +36,36 @@ $(function () {
   }
   setTimeout(getDefaultValues, 0);
 
-  function fillValues(iteration, fet_layers, all_layers){
-    $("#iteration").val(iteration)
+  function fillValues(iteration, fet_layers, all_layers, default_layer){
+    $("#iteration").val(iteration);
+    $("#layer").val(default_layer);
+    $("#default").val(default_layer);
 
     $(fet_layers).each( function(index, item){
-      $("#dropdown-fet_layers").append('<a class="dropdown-item az"> ' + item + '</a>');
+      $("#dropdown-fet_layers").append('<div class="dropdown-item"><a> ' + item + '</a></div>');
     })
 
     $(all_layers).each( function(index, item){
-      $("#dropdown-all_layers").append('<a class="dropdown-item az"> ' + item + '</a>');
+      $("#dropdown-all_layers").append('<div class="dropdown-item"><a> ' + item + '</a></div>');
     })
+
+    $(".dropdown-layers").dropdown();
   }
 
-  $(".dropdown-layers a").click(function() {
-    console.log(this.id);
-    console.log($(this).val())
-  });
+  function initListeners(){
+    $("#default").click(function(){
+      console.log($(this).val());
+      $("#layer").val($.trim($(this).val()));
+    });
 
-  $(".az").click(function() {
-    console.log(this.id);
-    console.log($(this).val())
-  });
+    $(".dropdown-layers").on('click', '.dropdown-item a',function() {
+      console.log("on dropdown-item a");
+      console.log($(this).text());
+      $("#layer").val($.trim($(this).text()));
+      // console.log(this.id);
+      // console.log($(this).val())
+    });
+  }  
 
    
    // post updates

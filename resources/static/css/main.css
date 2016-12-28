@@ -9,3 +9,7 @@
 .test{
 	color: red;
 }
+
+.dropdown-item a{
+	display: block;
+}

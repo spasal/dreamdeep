@@ -135,8 +135,6 @@ class Dream(object):
         self.__default_layer = 'mixed4d'
         self.__default_channel = 139
 
-        # funtion redefinition
-        # self.__resize = self.__tffunc(np.float32, np.int32)(self.__resize)
 
     # 1 download Inception zip if not exist yet and extract file
     def __download_inception_if_not_exist(self, url, data_dir):
@@ -145,16 +143,19 @@ class Dream(object):
 
         if not os.path.exists(local_zip_file):
             # Download
+            print("downloading inception")
             model_url = urllib.request.urlopen(url)
             with open(local_zip_file, 'wb') as output:
                 output.write(model_url.read())
 
+            print("extracting inception")
             # Extract
             with zipfile.ZipFile(local_zip_file, 'r') as zip_ref:
                 zip_ref.extractall(data_dir)
 
     # 2 create TF session and load the model
     def __create_TF_session_and_model(self, data_dir, model_fn):
+        print("initializing inception")
         graph = tf.Graph()
         sess = tf.InteractiveSession(graph=graph)
 
