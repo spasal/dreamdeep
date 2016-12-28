@@ -74,17 +74,21 @@ class ViewModel(object):
             if self.__show_general:
                 frame = camera.get_frame(False)
                 is_slideshow, frame = detect_faces(frame)
+                frame = camera.convert_to_jpeg(frame)
 
                 if not is_slideshow:
-                    frame = camera.convert_to_jpeg(frame)
                     yield (b'--frame\r\n'
                         b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
                 else:
                     # put logic to show slideshow
-                    get_slideshow_frame()
-                ''''frame = camera.get_frame()
-                #yield (b'--frame\r\n'
-                        b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')'''
+                    slideshow = get_slideshow_frame()
+                    if slideshow:
+                        yield (b'--frame\r\n'
+                        b'Content-Type: image/jpeg\r\n\r\n' + slideshow + b'\r\n\r\n')
+                    else:
+                        print()
+                        yield (b'--frame\r\n'
+                        b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
 
 
             # SHOW THE RESULT

@@ -1,5 +1,6 @@
 from PIL import Image
 import sys, os, json
+import glob
 import piexif
 import shutil
 
@@ -77,3 +78,15 @@ def save_file(path, file):
     output = open(path, 'wb')
     output.write(file)
     output.close()
+
+
+def get_images_as_byte_array(path, extension):
+    download_path = sys.path[0] + path + "/*" + extension
+    image_list = []
+    for filename in glob.glob(download_path):
+        with open(filename, "rb") as imageFile:
+            f = imageFile.read()
+            b = bytearray(f)
+            image_list.append(b)
+
+    return image_list

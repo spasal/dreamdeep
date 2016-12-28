@@ -46,7 +46,7 @@ def detect_faces(frame):
 
     # running average of has_face
     __append_to_arr(__has_faces, has_face, __count)
-    i_trues, i_false = __has_faces.count(True), __has_faces.count(False)
+    i_trues, i_false = __has_faces.count(True) * 1.5, __has_faces.count(False)
     has_face = i_trues > i_false
     if has_face:
         __drawText(frame, 'Deep dreams are made of you')
