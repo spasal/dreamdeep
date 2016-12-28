@@ -8,4 +8,4 @@ tests/*
 # __pywrap__tensorflow.so
 env/*
 resources/app_data/inception/*
-resources/static/uploads/*
+resources/static/uploads/history/*
