@@ -60,7 +60,7 @@ class ViewModel(object):
                 self.__handle_dream(frame, frame_jpg)
 
             if self.__show_count_down:
-                frame = self.__count_down(self.__start_time, self.__count, frame)
+                frame = self.__count_down(self.__start_time, self.__count, camera, frame)
 
 
             frame = camera.convert_to_jpeg(frame)
@@ -79,7 +79,7 @@ class ViewModel(object):
         self.__duplicate_show = False
         return camera.get_frame(False)
 
-    def __determine_if_slideshow_and_return_frame(frame):
+    def __determine_if_slideshow_and_return_frame(self, frame):
         # todo; split functionality in detect_faces and is_slideshow
         is_slideshow, frame = detect_faces(frame)
         if is_slideshow:
@@ -91,10 +91,10 @@ class ViewModel(object):
         self.__frame_dream = frame_dream
         self.__save_dream(frame_dream_jpg, self.__layer, self.__iterations)
 
-        self.__init_dream, self.__is_locked = False, False
+        self.__start_dream, self.__is_locked = False, False
         self.__show_dream = True
 
-    def __count_down(self, start_time, count, frame):
+    def __count_down(self, start_time, count, camera, frame):
         elapsed = int(time.time() - start_time)
         resting = count - elapsed
         cv2.putText(img=frame, text=str(resting), org=(300, 300), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=4, thickness=4, color=(255, 255, 255))
@@ -103,6 +103,8 @@ class ViewModel(object):
             self.__show_count_down = False
             self.__start_dream = True
             self.__duplicate_show = True
+            print("getting new frame")
+            frame = camera.get_frame(False)
 
         return frame
 
