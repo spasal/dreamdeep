@@ -3,7 +3,6 @@ from app.models import VideoCamera, Dream, detect_faces
 from app.common import file_io
 from flask import Response
 import datetime, time
-import json
 import cv2
 import os
 
@@ -28,6 +27,7 @@ class ViewModel(object):
     # PUBLIC CONTROLLERS OF VIDEO STREAM
     def start_dream(self, data):
         if not self.__is_locked:
+            print("starting dream")
             self.__is_locked = True
             self.__show_count_down = True
             self.__start_time = time.time()
@@ -40,6 +40,7 @@ class ViewModel(object):
 
     def reset_window(self):
         if not self.__is_locked:
+            print("resetting window")
             self.__show_general = True
             self.__start_time = time.time()
 
@@ -47,13 +48,12 @@ class ViewModel(object):
             self.__show_count_down = False
 
     def get_default_control_values(self):
-        data = {
+        return {
             "iteration": self.__iterations,
             "layers": self.__layers,
             "all_layers": self.__all_layers,
             "default_layer": self.__default_layer
         }
-        return data
 
 
     # GET VIDEO STREAM
@@ -70,49 +70,33 @@ class ViewModel(object):
         init_slideshow()
 
         while True:
+            frame = camera.get_frame(False)
+
             # REGULAR STREAM
             if self.__show_general:
-                frame = camera.get_frame(False)
+                # todo; split functionality in detect_faces and is_slideshow
                 is_slideshow, frame = detect_faces(frame)
-                frame = camera.convert_to_jpeg(frame)
-
-                if not is_slideshow:
-                    yield (b'--frame\r\n'
-                        b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
-                else:
-                    # put logic to show slideshow
-                    slideshow = get_slideshow_frame()
-                    if slideshow:
-                        yield (b'--frame\r\n'
-                        b'Content-Type: image/jpeg\r\n\r\n' + slideshow + b'\r\n\r\n')
-                    else:
-                        print()
-                        yield (b'--frame\r\n'
-                        b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
-
+                if is_slideshow:
+                    frame = get_slideshow_frame(frame)
 
             # SHOW THE RESULT
             if self.__show_dream:
-                yield (b'--frame\r\n'
-                    b'Content-Type: image/jpeg\r\n\r\n' + self.__frame_dream + b'\r\n\r\n')
+                frame = self.__frame_dream
 
 
             # INIT DREAM
             if self.__init_dream:
-                frame = camera.get_frame(True)
+                tmp_frame = camera.get_frame(True)
                 yield (b'--frame\r\n'
-                   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+                   b'Content-Type: image/jpeg\r\n\r\n' + tmp_frame + b'\r\n\r\n')
 
-                frame = camera.get_frame(False)
-                frame_dream = dream_generator.render_deepdream(self.__layer, frame, self.__iterations)
-                frame_dream = camera.convert_to_jpeg(frame_dream)
+                frame = dream_generator.render_deepdream(self.__layer, frame, self.__iterations)
+                frame_save = camera.convert_to_jpeg(frame)
 
-                yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + frame_dream + b'\r\n\r\n')
-
-                self.__frame_dream = frame_dream
+                self.__frame_dream = frame
                 self.__init_dream = False
                 self.__show_dream = True
-                self.__save_dream(self.__frame_dream, self.__layer, self.__iterations)
+                self.__save_dream(frame_save, self.__layer, self.__iterations)
                 self.__is_locked = False
 
 
@@ -120,19 +104,16 @@ class ViewModel(object):
             if self.__show_count_down:
                 elapsed = int(time.time() - self.__start_time)
                 resting = self.__count - elapsed
-
-                frame_text = camera.get_frame(False)
-                cv2.putText(img=frame_text, text=str(resting), org=(300, 300), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=4, thickness=4, color=(255, 255, 255))
-                frame_text = camera.convert_to_jpeg(frame_text)
-
-                yield (b'--frame\r\n'
-                    b'Content-Type: image/jpeg\r\n\r\n' + frame_text + b'\r\n\r\n')
+                cv2.putText(img=frame, text=str(resting), org=(300, 300), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=4, thickness=4, color=(255, 255, 255))
 
                 if resting <= 0:
                     self.__show_count_down = False
                     self.__init_dream = True
-                    frame = camera.get_frame(True)
-                    yield (b'--frame\r\n'
+                    frame = camera.get_frame(False)
+
+
+            frame = camera.convert_to_jpeg(frame)
+            yield (b'--frame\r\n'
                         b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
 
 
@@ -140,16 +121,20 @@ class ViewModel(object):
         # get path and filename
         filename = str(time.time()) + ".jpg"
         path = os.path.join(os.getcwd(), "resources", "static", "uploads", "history", filename)
+        print("1a")
 
         # save image
         file_io.save_file(path, frame_dream)
+        print("1b")
 
         # save metadata to jpeg
         date = str(datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S"))
         timestamp = filename[:-4]
         userdata = {'id': filename, 'path': path, 'layer': layer, 'iterations': iterations, 'timestamp': timestamp, 'date_time': date, 'is_favorite': False}
+        print("1c")
 
         file_io.save_exif_file(userdata)
+        print("1d")
 
 print("INIT VM")
 vm = ViewModel()
