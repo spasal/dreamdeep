@@ -8,44 +8,19 @@ import os
 
 
 class ViewModel(object):
-    def __init__(self):
-        self.__show_general = True
-
-        self.__show_dream = False
-        self.__show_count_down = False
-        self.__init_dream = False
-
-        self.__is_locked = False
-
-        self.__count = 3
-        self.__iterations = 10
-        self.__layers = ""
-        self.__all_layers = ""
-        self.__default_layer = ""
-
-
-    # PUBLIC CONTROLLERS OF VIDEO STREAM
+    '''' PUBLIC VIDEOSTREAMER PARAMETER MANIPULATION '''
     def start_dream(self, data):
         if not self.__is_locked:
-            print("starting dream")
-            self.__is_locked = True
-            self.__show_count_down = True
+            self.__iterations, self.__layer = int(data['iteration']), str(data['layer'])
             self.__start_time = time.time()
 
-            self.__iterations = int(data['iteration'])
-            self.__layer = str(data['layer'])
-
-            self.__show_general = False
-            self.__show_dream = False
+            self.__is_locked, self.__show_count_down = True, True
+            self.__show_general, self.__show_dream = False, False
 
     def reset_window(self):
         if not self.__is_locked:
-            print("resetting window")
             self.__show_general = True
-            self.__start_time = time.time()
-
-            self.__show_dream = False
-            self.__show_count_down = False
+            self.__show_dream, self.__show_count_down = False, False
 
     def get_default_control_values(self):
         return {
@@ -56,12 +31,12 @@ class ViewModel(object):
         }
 
 
-    # GET VIDEO STREAM
+    '''' VIDEOSTREAM GENERATOR + FRAME MANIPULATION '''
+    # HTTP VIDEO STREAM RESPONSE
     def video_feed(self):
         return Response(self.__gen(VideoCamera()), mimetype='multipart/x-mixed-replace; boundary=frame')
 
-
-    # CORE VM DREAM LOGIC
+    # OUTPUT FRAME MANIPULATION
     def __gen(self, camera):
         dream_generator = Dream('resources/app_data/inception')
         self.__layers = dream_generator.get_featured_layers()
@@ -70,71 +45,100 @@ class ViewModel(object):
         init_slideshow()
 
         while True:
-            frame = camera.get_frame(False)
+            frame = self.__get_frame(camera)
 
-            # REGULAR STREAM
+
             if self.__show_general:
-                # todo; split functionality in detect_faces and is_slideshow
-                is_slideshow, frame = detect_faces(frame)
-                if is_slideshow:
-                    frame = get_slideshow_frame(frame)
+                frame = self.__determine_if_slideshow_and_return_frame(frame)
 
-            # SHOW THE RESULT
             if self.__show_dream:
                 frame = self.__frame_dream
 
-
-            # INIT DREAM
-            if self.__init_dream:
-                tmp_frame = camera.get_frame(True)
-                yield (b'--frame\r\n'
-                   b'Content-Type: image/jpeg\r\n\r\n' + tmp_frame + b'\r\n\r\n')
-
+            if self.__start_dream:
                 frame = dream_generator.render_deepdream(self.__layer, frame, self.__iterations)
-                frame_save = camera.convert_to_jpeg(frame)
+                frame_jpg = camera.convert_to_jpeg(frame)
+                self.__handle_dream(frame, frame_jpg)
 
-                self.__frame_dream = frame
-                self.__init_dream = False
-                self.__show_dream = True
-                self.__save_dream(frame_save, self.__layer, self.__iterations)
-                self.__is_locked = False
-
-
-            # COUNT DOWN
             if self.__show_count_down:
-                elapsed = int(time.time() - self.__start_time)
-                resting = self.__count - elapsed
-                cv2.putText(img=frame, text=str(resting), org=(300, 300), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=4, thickness=4, color=(255, 255, 255))
-
-                if resting <= 0:
-                    self.__show_count_down = False
-                    self.__init_dream = True
-                    frame = camera.get_frame(False)
+                frame = self.__count_down(self.__start_time, self.__count, frame)
 
 
             frame = camera.convert_to_jpeg(frame)
-            yield (b'--frame\r\n'
+            if not self.__duplicate_show:
+                yield (b'--frame\r\n'
+                        b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+            else:
+                yield (b'--frame\r\n'
+                        b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+                yield (b'--frame\r\n'
                         b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
 
 
+    '''' PRIVATE FRAME MANIPULATION HELPERS '''
+    def __get_frame(self, camera):
+        self.__duplicate_show = False
+        return camera.get_frame(False)
+
+    def __determine_if_slideshow_and_return_frame(frame):
+        # todo; split functionality in detect_faces and is_slideshow
+        is_slideshow, frame = detect_faces(frame)
+        if is_slideshow:
+            frame = get_slideshow_frame(frame)
+
+        return frame
+
+    def __handle_dream(self, frame_dream, frame_dream_jpg):
+        self.__frame_dream = frame_dream
+        self.__save_dream(frame_dream_jpg, self.__layer, self.__iterations)
+
+        self.__init_dream, self.__is_locked = False, False
+        self.__show_dream = True
+
+    def __count_down(self, start_time, count, frame):
+        elapsed = int(time.time() - start_time)
+        resting = count - elapsed
+        cv2.putText(img=frame, text=str(resting), org=(300, 300), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=4, thickness=4, color=(255, 255, 255))
+
+        if resting <= 0:
+            self.__show_count_down = False
+            self.__start_dream = True
+            self.__duplicate_show = True
+
+        return frame
+
+
+    '''' PRIVATE HELPER FUNCTIONS '''
     def __save_dream(self, frame_dream, layer, iterations):
         # get path and filename
         filename = str(time.time()) + ".jpg"
         path = os.path.join(os.getcwd(), "resources", "static", "uploads", "history", filename)
-        print("1a")
 
         # save image
         file_io.save_file(path, frame_dream)
-        print("1b")
 
         # save metadata to jpeg
         date = str(datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S"))
         timestamp = filename[:-4]
         userdata = {'id': filename, 'path': path, 'layer': layer, 'iterations': iterations, 'timestamp': timestamp, 'date_time': date, 'is_favorite': False}
-        print("1c")
 
         file_io.save_exif_file(userdata)
-        print("1d")
 
-print("INIT VM")
+    def __init__(self):
+        self.__show_general = True
+
+        self.__show_dream = False
+        self.__show_count_down = False
+        self.__start_dream = False
+
+        self.__is_locked = False
+
+        self.__count = 3
+        self.__duplicate_show = False
+
+        self.__iterations = 10
+        self.__layers = ""
+        self.__all_layers = ""
+        self.__default_layer = ""
+
+
 vm = ViewModel()
