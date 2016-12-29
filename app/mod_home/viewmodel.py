@@ -53,7 +53,7 @@ class ViewModel(object):
             "all_layers": self.__all_layers,
             "default_layer": self.__default_layer
         }
-        return json.dumps(data)
+        return data
 
 
     # GET VIDEO STREAM

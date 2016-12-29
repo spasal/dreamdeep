@@ -29,3 +29,5 @@ https://pypi.python.org/pypi/piexif
 http://pycoder.net/bospy/presentation.html#bonus-material
 http://codehandbook.org/python-flask-jquery-ajax-post/
 
+# http://stackoverflow.com/questions/30901998/threading-true-with-flask-socketio
+
