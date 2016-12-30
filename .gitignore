@@ -9,5 +9,6 @@ tests/*
 env/*
 resources/app_data/inception/*
 resources/static/uploads/history/*
+resources/static/sounds/d*
 
 .vscode/*

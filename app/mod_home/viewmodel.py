@@ -6,6 +6,8 @@ import datetime, time
 import cv2
 import os
 
+print("INIT INIT INIT")
+
 
 class ViewModel(object):
     '''' PUBLIC VIDEOSTREAMER PARAMETER MANIPULATION '''
@@ -37,7 +39,7 @@ class ViewModel(object):
     '''' VIDEOSTREAM GENERATOR + FRAME MANIPULATION '''
     # HTTP VIDEO STREAM RESPONSE
     def video_feed(self):
-        return Response(self.__gen(VideoCamera()), mimetype='multipart/x-mixed-replace; boundary=frame')
+        return Response(self.__gen(self.__camera), mimetype='multipart/x-mixed-replace; boundary=frame')
 
     # OUTPUT FRAME MANIPULATION
     def __gen(self, camera):
@@ -129,6 +131,7 @@ class ViewModel(object):
         file_io.save_exif_file(userdata)
 
     def __init__(self):
+        print("---INIT INIT INIT")
         self.__show_general = True
 
         self.__show_dream = False
@@ -144,6 +147,7 @@ class ViewModel(object):
         self.__layers = ""
         self.__all_layers = ""
         self.__default_layer = ""
+        self.__camera = VideoCamera()
 
 
 vm = ViewModel()
