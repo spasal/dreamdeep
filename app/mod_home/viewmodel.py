@@ -30,6 +30,9 @@ class ViewModel(object):
             "default_layer": self.__default_layer
         }
 
+    def is_dreaming(self):
+        return self.__is_locked
+
 
     '''' VIDEOSTREAM GENERATOR + FRAME MANIPULATION '''
     # HTTP VIDEO STREAM RESPONSE
@@ -45,6 +48,7 @@ class ViewModel(object):
         init_slideshow()
 
         while True:
+            # get source frame to do operations on
             frame = self.__get_frame(camera)
 
             # do various operations depending on what control is set
@@ -55,15 +59,18 @@ class ViewModel(object):
                 frame = self.__frame_dream
 
             if self.__start_dream:
+                start_time = time.time()
                 yield self.__get_jpeg_bytestream(camera.convert_to_jpeg, frame.copy())
+
                 frame = dream_generator.render_deepdream(self.__layer, frame, self.__iterations)
                 frame_jpg = camera.convert_to_jpeg(frame)
                 self.__handle_dream(frame, frame_jpg)
+                print("time to dream: %s" % (time.time() - start_time))
 
             if self.__show_count_down:
                 frame = self.__count_down(self.__start_time, self.__count, camera, frame)
 
-            # output the result
+            # output the result in stream
             yield self.__get_jpeg_bytestream(camera.convert_to_jpeg, frame)
 
 

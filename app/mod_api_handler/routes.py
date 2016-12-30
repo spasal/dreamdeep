@@ -6,16 +6,16 @@ import json
 
 @app.route('/start_dream', methods=['POST'])
 # @limit(requests=10, window=60, by="ip")
-def handle_post():
+def handle_dream():
     data = request.get_json(force=True)
     vm.start_dream(data)
-    return json.dumps({'status': 'OK'})
+    return json.dumps({"status": "OK"})
 
 
 @app.route('/reset_view')
 def handle_reset():
     vm.reset_window()
-    return json.dumps({'status': 'OK'})
+    return json.dumps({"status": "OK"})
 
 
 @app.route('/default')
@@ -27,3 +27,9 @@ def handle_default():
         if res["layers"] != "" and res["all_layers"] != "" and res["default_layer"] != "":
             has_return_values = True
             return json.dumps(res)
+
+
+@app.route('/is_dream')
+def handle_is_dream():
+    answer = vm.is_dreaming()
+    return json.dumps({"is_dreaming": answer})
