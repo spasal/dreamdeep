@@ -28,27 +28,30 @@
 		</div>
 	</nav>
 
-	<div class="container">
+	<div class="col-md-2"></div>
+	<div class="container col-md-8">
 		<!-- control dream element -->
 		<div class="row">
-			<div class="col-md-10">
-				<div class="panel panel-default">
-					<div class="panel-heading">
-						<h2 class="panel-title">Control your Dream</h3>
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h2 class="panel-title">Control your Dream</h3>
+				</div>
+				<div class="panel-body">
+					<!-- image stream  -->
+					<div class="col-md-12">
+						<img id="cam_stream" class="center-block" src="{{ url_for('mod_home.get_video_feed') }}" />
 					</div>
-					<div class="panel-body">
-						<div class="col-md-12">
-							<img id="cam_stream" src="{{ url_for('mod_home.get_video_feed') }}" />
-						</div>
 
+					<!-- controls -->
+					<div class="col-md-12 margin-top">
 						<div class="col-md-4">
-							<button type="submit" class="btn btn-primary" id="start_dream">Dream</button>
+							<button type="submit" class="btn btn-alt center-block" id="start_dream">Dream</button>
 						</div>
 						<div class="col-md-4">
-							<button type="submit" class="btn btn-primary" id="reset_dream">Reset</button>
+							<button type="submit" class="btn btn-alt center-block" id="reset_dream">Reset</button>
 						</div>
 						<div class="col-md-4">
-							<button type="submit" class="btn btn-primary" id="upload_dream">Upload</button>
+							<button type="submit" class="btn btn-alt center-block" id="upload_dream">Upload</button>
 						</div>
 					</div>
 				</div>
@@ -57,7 +60,7 @@
 
 		<!-- set dream element -->
 		<div class="row">
-			<div class="col-md-10">
+			<div class="col-md-12">
 				<div class="panel panel-default">
 					<div class="panel-heading">
 						<h2 class="panel-title">Set your Dream</h3>
@@ -66,15 +69,15 @@
 						<div class="col-md-6">
 							<form class="form-horizontal">
 								<div class="form-group">
-									<label for="layer" class="col-sm-2 control-label">Layer</label>
-									<div class="col-sm-10">
-										<input type="text" class="form-control" id="layer" placeholder="Your selected layer will come here">
-									</div>
-								</div>
-								<div class="form-group">
 									<label for="iteration" class="col-sm-2 control-label">Iterations</label>
 									<div class="col-sm-10">
 										<input type="text" class="form-control" id="iteration" placeholder="5-30 iterations">
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="layer" class="col-sm-2 control-label">Layer</label>
+									<div class="col-sm-10">
+										<input type="text" class="form-control" id="layer" placeholder="Your selected layer will come here">
 									</div>
 								</div>
 							</form>
@@ -105,6 +108,7 @@
 			</div>
 		</div>
 	</div>
+	<div class="col-md-2"></div>
 
 	<audio id="sweet_dreams">
 		<source src="{{ url_for('static', filename='sounds/sweet_dreams.mp3') }}" type="audio/mpeg">
