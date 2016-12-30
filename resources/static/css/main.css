@@ -6,10 +6,10 @@
 	margin-right: 15px;
 }
 
-.test{
-	color: red;
-}
-
 .dropdown-item a{
 	display: block;
+}
+
+.form-control-label{
+	line-height: 34px;
 }
