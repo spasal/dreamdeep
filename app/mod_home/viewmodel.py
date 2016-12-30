@@ -47,7 +47,7 @@ class ViewModel(object):
         while True:
             frame = self.__get_frame(camera)
 
-
+            # do various operations depending on what control is set
             if self.__show_general:
                 frame = self.__determine_if_slideshow_and_return_frame(frame)
 
@@ -55,6 +55,7 @@ class ViewModel(object):
                 frame = self.__frame_dream
 
             if self.__start_dream:
+                yield self.__get_jpeg_bytestream(camera.convert_to_jpeg, frame.copy())
                 frame = dream_generator.render_deepdream(self.__layer, frame, self.__iterations)
                 frame_jpg = camera.convert_to_jpeg(frame)
                 self.__handle_dream(frame, frame_jpg)
@@ -62,21 +63,18 @@ class ViewModel(object):
             if self.__show_count_down:
                 frame = self.__count_down(self.__start_time, self.__count, camera, frame)
 
-
-            frame = camera.convert_to_jpeg(frame)
-            if not self.__duplicate_show:
-                yield (b'--frame\r\n'
-                        b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
-            else:
-                yield (b'--frame\r\n'
-                        b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
-                yield (b'--frame\r\n'
-                        b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+            # output the result
+            yield self.__get_jpeg_bytestream(camera.convert_to_jpeg, frame)
 
 
     '''' PRIVATE FRAME MANIPULATION HELPERS '''
+    def __get_jpeg_bytestream(self, convert_to_jpeg, frame):
+        if type(frame) is not bytearray:
+                frame = convert_to_jpeg(frame)
+        return (b'--frame\r\n'
+                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+
     def __get_frame(self, camera):
-        self.__duplicate_show = False
         return camera.get_frame(False)
 
     def __determine_if_slideshow_and_return_frame(self, frame):
@@ -102,8 +100,6 @@ class ViewModel(object):
         if resting <= 0:
             self.__show_count_down = False
             self.__start_dream = True
-            self.__duplicate_show = True
-            print("getting new frame")
             frame = camera.get_frame(False)
 
         return frame

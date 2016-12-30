@@ -14,7 +14,7 @@
 
 </head>
 <body>
-	
+
 	<nav class="navbar navbar-default">
 		<div class="container">
 			<div class="navbar-header">
@@ -40,12 +40,13 @@
 					<div class="text-center">
 						<a href="/favorites/fav/{{ request['id'] }}"><button {% if request["is_favorite"] == True %} class="btn btn-primary" {% else %} class="btn" {% endif %}>favor</button></a>
 						<a href="/favorites/del/{{ request['id'] }}"><button class="btn">delete</button></a>
+						<a href="/favorites/save/{{ request['id'] }}"><button class="btn">member</button></a>
 					</div>
 				</div>
 			</div>
 		{% endfor %}
 	</div>
-	
+
 	<script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.1.1.min.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
 
