@@ -25,11 +25,16 @@ class ViewModel(object):
             self.__show_dream, self.__show_count_down = False, False
 
     def get_default_control_values(self):
+        layer = self.__layer
+        if layer != "":
+            layer = self.__default_layer
+
         return {
             "iteration": self.__iterations,
             "layers": self.__layers,
             "all_layers": self.__all_layers,
-            "default_layer": self.__default_layer
+            "default_layer": self.__default_layer,
+            "layer": layer
         }
 
     def is_dreaming(self):
@@ -39,7 +44,8 @@ class ViewModel(object):
     '''' VIDEOSTREAM GENERATOR + FRAME MANIPULATION '''
     # HTTP VIDEO STREAM RESPONSE
     def video_feed(self):
-        return Response(self.__gen(self.__camera), mimetype='multipart/x-mixed-replace; boundary=frame')
+        # todo; if not development self.__camera
+        return Response(self.__gen(VideoCamera()), mimetype='multipart/x-mixed-replace; boundary=frame')
 
     # OUTPUT FRAME MANIPULATION
     def __gen(self, camera):
@@ -147,7 +153,7 @@ class ViewModel(object):
         self.__layers = ""
         self.__all_layers = ""
         self.__default_layer = ""
-        self.__camera = VideoCamera()
+        # self.__camera = VideoCamera()
 
 
 vm = ViewModel()
