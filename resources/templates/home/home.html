@@ -39,8 +39,12 @@
 		<div class="row">
 			<div class="col-md-12">
 				<button type="submit" class="btn btn-primary" id="start_dream">Dream</button>
-				<button type="submit" class="btn btn-primary" id="retry_dream">Retry</button>
-				<button type="submit" class="btn btn-primary" id="reset_vars">Reset</button>
+				<button type="submit" class="btn btn-primary" id="reset_dream">Reset</button>
+				<button type="submit" class="btn btn-primary" id="upload_dream">Upload</button>
+				 <audio id="sweet_dreams">
+					<source src="{{ url_for('static', filename='sounds/sweet_dreams.mp3') }}" type="audio/mpeg">
+					Your browser does not support the audio element.
+				</audio>
 			</div>
 		</div>
 

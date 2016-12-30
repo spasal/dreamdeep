@@ -31,7 +31,7 @@ class ViewModel(object):
         }
 
     def is_dreaming(self):
-        return self.__is_locked
+        return self.__start_dream
 
 
     '''' VIDEOSTREAM GENERATOR + FRAME MANIPULATION '''

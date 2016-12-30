@@ -60,6 +60,7 @@ $(function() {
     // start dream post parameters
     is_dreaming = false
     $("#start_dream").click(function() {
+        startMusic()
         data = {
             iteration: $("#iteration").val(),
             layer: $("#layer").val()
@@ -86,34 +87,53 @@ $(function() {
             url: '/api/is_dream',
             success: function(response) {
                 var obj = jQuery.parseJSON(response);
+                check_time = 750;
 
                 if (is_dreaming == false){
                     if(obj.is_dreaming == true){
-                        // dream started; start music
-                        console.log("dream started")
-                        is_dreaming = true
-                    }else{
-                        // dream not started
-                        console.log("dream not yet started")
+                        // dream started
+                        is_dreaming = true;
                     }
-                    setTimeout(checkIfDreaming, 500);
+                    setTimeout(checkIfDreaming, check_time);
                 } else{
                     if(obj.is_dreaming == true){
-                        // still dreaming; retry
-                        console.log("still dreaming")
-                        setTimeout(checkIfDreaming, 500);
+                        setTimeout(checkIfDreaming, check_time);
                     }else{
                         // dream is done; stop music
-                        console.log("dream done")
-                        is_dreaming = false
+                        stopMusic();
+                        is_dreaming = false;
                     }
                 }
             },
             error: function(error) {
                 console.log('error: ' + error)
-                setTimeout(checkIfDreaming, 500);
+                setTimeout(checkIfDreaming, check_time);
             }
         });
+    }
+
+    function startMusic(){
+        console.log("start music");
+        play_audio("play");
+    }
+    function stopMusic(){
+        console.log("stop music");
+        play_audio("stop");
+    }
+    function play_audio(task) {
+        audioPlayer = $("#sweet_dreams");
+
+        if(task == 'play'){
+            audioPlayer.prop("volume",0);
+            audioPlayer.trigger('play');
+            audioPlayer.animate({volume: 0.5}, 3000);
+        }
+        if(task == 'stop'){
+            audioPlayer.animate({volume: 0}, 3500, function(){
+                audioPlayer.trigger('pause');
+                audioPlayer.prop("currentTime",0);
+            });
+        }
     }
 
 
@@ -133,11 +153,11 @@ $(function() {
         });
     });
     setTimeout(function() {
-        $("#retry_dream").trigger('click')
+        $("#reset_dream").trigger('click')
     }, 1);
 
     // file upload
-    $("#reset_vars").click(function() {
+    $("#upload_dream").click(function() {
 
     });
 });
