@@ -6,8 +6,12 @@ import datetime, time
 import cv2
 import os
 
-print("INIT INIT INIT")
-
+'''' FILE UPLOAD
+https://github.com/blueimp/jQuery-File-Upload
+http://blueimp.github.io/jQuery-File-Upload/basic.html
+https://github.com/blueimp/jQuery-File-Upload/wiki/Basic-plugin
+https://github.com/ngoduykhanh/flask-file-uploader
+'''
 
 class ViewModel(object):
     '''' PUBLIC VIDEOSTREAMER PARAMETER MANIPULATION '''
