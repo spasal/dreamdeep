@@ -1,5 +1,6 @@
 from app.mod_api_handler import api_handler__blueprint as app
 from app.mod_home.viewmodel import vm
+from app.common import mail_handler
 from flask import request
 import json
 
@@ -15,6 +16,7 @@ def handle_dream():
 @app.route('/reset_view')
 def handle_reset():
     vm.reset_window()
+    mail_handler.send_mail("alex.spassov.simeonov@student.howest.be", "1482773303.330877.jpg")
     return json.dumps({"status": "OK"})
 
 

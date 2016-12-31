@@ -31,11 +31,11 @@
 
 	<div class="container" style="margin-top: 50px">
 		{% for request in favorites: %}
-			<div class="col-md-6 col-sm-6">
+			<div class="col-md-6 col-xs-12">
 				<div class="thumbnail">
 					<img src="{{ url_for('static', filename='uploads/history/') }}{{ request['id'] }}" alt="">
 					<div class="caption text-center">
-						<b>{{ request['time'] }}</b>
+						<b>{{ request['layer'] }}</b>
 					</div>
 					<div class="text-center">
 						<a href="/history/del/{{ request['id'] }}"><button class="btn btn-alt">delete</button></a>

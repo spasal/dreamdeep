@@ -1,15 +1,9 @@
 $(function() {
-    //on-close | on-open
+    //on-close
     window.onbeforeunload = closing;
     function closing() {
         alert("leaving page")
         $("#stream").attr('src', '')
-    }
-    window.onload = opening;
-    function opening(){
-        setTimeout(function() {
-            $("#reset_dream").trigger('click')
-        }, 1);
     }
 
     // number map function
