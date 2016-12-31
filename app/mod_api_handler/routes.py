@@ -16,7 +16,6 @@ def handle_dream():
 @app.route('/reset_view')
 def handle_reset():
     vm.reset_window()
-    mail_handler.send_mail("alex.spassov.simeonov@student.howest.be", "1482773303.330877.jpg")
     return json.dumps({"status": "OK"})
 
 
@@ -35,3 +34,13 @@ def handle_default():
 def handle_is_dream():
     answer = vm.is_dreaming()
     return json.dumps({"is_dreaming": answer})
+
+
+@app.route('/save_dream', methods=['POST'])
+def handle_save():
+    data = request.get_json(force=True)
+    recipient = data["recipient"]
+    filename = data["filename"]
+    mail_handler.send_mail(recipient, filename)
+    print(recipient, filename)
+    return json.dumps({"status": "OK"})
