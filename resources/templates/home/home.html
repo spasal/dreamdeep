@@ -56,6 +56,25 @@
 						<div class="col-xs-4">
 							<button type="submit" class="btn btn-alt center-block" id="upload_dream">Upload</button>
 						</div>
+						<div class="col-xs-4">
+							<br />
+							<span class="btn btn-success fileinput-button">
+								<i class="glyphicon glyphicon-plus"></i>
+								<span>Select files...</span>
+								<!-- The file input field used as target for the file upload widget -->
+								<input id="fileupload" name="files[]" multiple="" type="file">
+							</span>
+
+							<br /><br />
+
+							<!-- The global progress bar -->
+							<div id="progress" class="progress">
+								<div class="progress-bar progress-bar-success" style="width: 100%;"></div>
+							</div>
+
+							<!-- The container for the uploaded files -->
+							<div id="files" class="files"><p>1483007474.0521321.jpg</p></div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -118,6 +137,8 @@
 
 	<script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.1.1.min.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/file/jquery.ui.widget.js') }}"></script>
+
 	<script type="text/javascript" src="{{ url_for('static', filename='js/app.js') }}"></script>
 </body>
 </html>

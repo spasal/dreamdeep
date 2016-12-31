@@ -7,6 +7,9 @@ import cv2
 import os
 
 '''' FILE UPLOAD
+http://bboe-image.herokuapp.com/
+https://github.com/bboe/flask-image-uploader
+
 https://github.com/blueimp/jQuery-File-Upload
 http://blueimp.github.io/jQuery-File-Upload/basic.html
 https://github.com/blueimp/jQuery-File-Upload/wiki/Basic-plugin
