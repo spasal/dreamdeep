@@ -27,9 +27,10 @@ $(function() {
             url: '/api/default',
             success: function(response) {
                 var obj = jQuery.parseJSON(response);
-
+                console.log(obj)
+                console.log(obj.layer)
                 if (obj.layers != "" && obj.all_layers != "" && obj.default_layer != "") {
-                    fillDefaultValues(obj.iteration, obj.layers, obj.all_layers, obj.default_layer);
+                    fillDefaultValues(obj.iteration, obj.layers, obj.all_layers, obj.default_layer, obj.layer);
                     initListeners();
                 } else {
                     setTimeout(getDefaultValues, 500);
@@ -41,9 +42,9 @@ $(function() {
             }
         });
 
-        function fillDefaultValues(iteration, fet_layers, all_layers, default_layer) {
+        function fillDefaultValues(iteration, fet_layers, all_layers, default_layer, layer) {
             $("#iteration").val(iteration);
-            $("#layer").val(default_layer);
+            $("#layer").val(layer);
             $("#default").val(default_layer);
 
             $(fet_layers).each(function(index, item) {

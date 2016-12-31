@@ -26,7 +26,7 @@ class ViewModel(object):
 
     def get_default_control_values(self):
         layer = self.__layer
-        if layer != "":
+        if layer == "":
             layer = self.__default_layer
 
         return {
@@ -153,6 +153,7 @@ class ViewModel(object):
         self.__layers = ""
         self.__all_layers = ""
         self.__default_layer = ""
+        self.__layer = ""
         # self.__camera = VideoCamera()
 
 
