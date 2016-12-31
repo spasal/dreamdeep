@@ -16,18 +16,17 @@ class ViewModel(object):
             self.__iterations, self.__layer = int(data['iteration']), str(data['layer'])
             self.__start_time = time.time()
 
+            self.__show_general, self.__show_dream, self.__start_dream = False, False, False
+            print("- %s " % self.__show_general)
             self.__is_locked, self.__show_count_down = True, True
-            self.__show_general, self.__show_dream = False, False
 
     def reset_window(self):
         if not self.__is_locked:
-            self.__show_general = True
             self.__show_dream, self.__show_count_down = False, False
+            self.__show_general = True
 
     def get_default_control_values(self):
-        layer = self.__layer
-        if layer == "":
-            layer = self.__default_layer
+        layer = (self.__default_layer if self.__layer == "" else self.__layer)
 
         return {
             "iteration": self.__iterations,
@@ -67,15 +66,15 @@ class ViewModel(object):
                 frame = self.__frame_dream
 
             if self.__start_dream:
-                start_time = time.time()
+                if type(frame) is bytearray: continue
                 yield self.__get_jpeg_bytestream(camera.convert_to_jpeg, frame.copy())
 
                 frame = dream_generator.render_deepdream(self.__layer, frame, self.__iterations)
                 frame_jpg = camera.convert_to_jpeg(frame)
                 self.__handle_dream(frame, frame_jpg)
-                print("time to dream: %s" % (time.time() - start_time))
 
             if self.__show_count_down:
+                if type(frame) is bytearray: continue
                 frame = self.__count_down(self.__start_time, self.__count, camera, frame)
 
             # output the result in stream

@@ -38,9 +38,9 @@
 						<b>{{ request['time'] }}</b>
 					</div>
 					<div class="text-center">
-						<a href="/favorites/fav/{{ request['id'] }}"><button {% if request["is_favorite"] == True %} class="btn btn-primary" {% else %} class="btn" {% endif %}>favor</button></a>
-						<a href="/favorites/del/{{ request['id'] }}"><button class="btn">delete</button></a>
-						<a href="/favorites/save/{{ request['id'] }}"><button class="btn">member</button></a>
+						<a href="/history/del/{{ request['id'] }}"><button class="btn btn-alt">delete</button></a>
+						<a href="/history/save/{{ request['id'] }}"><button class="btn btn-alt">member</button></a>
+						<a href="/history/fav/{{ request['id'] }}"><button {% if request["is_favorite"] == True %} class="btn btn-alt-primary" {% else %} class="btn btn-alt" {% endif %}>favor</button></a>
 					</div>
 				</div>
 			</div>

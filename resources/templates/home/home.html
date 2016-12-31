@@ -38,8 +38,11 @@
 				</div>
 				<div class="panel-body">
 					<!-- image stream  -->
-					<div class="col-md-12">
-						<img id="cam_stream" class="center-block" src="{{ url_for('mod_home.get_video_feed') }}" />
+					<div class="col-md-12 center-block">
+						<div class="wrapper">
+							<span id="stream_overlay" class="overlay"></span>
+							<img id="stream" class="center-block" src="{{ url_for('mod_home.get_video_feed') }}" />
+						</div>
 					</div>
 
 					<!-- controls -->

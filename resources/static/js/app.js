@@ -3,7 +3,7 @@ $(function() {
     window.onbeforeunload = closing;
     function closing() {
         alert("leaving page")
-        $("#cam_stream").attr('src', '')
+        $("#stream").attr('src', '')
     }
     window.onload = opening;
     function opening(){
@@ -110,6 +110,7 @@ $(function() {
                     if(obj.is_dreaming == true){
                         // dream started
                         is_dreaming = true;
+                        $(".overlay").css("opacity", "0.45");
                         setTimeout(checkIfDreaming, check_time_1);
                     }else{
                         setTimeout(checkIfDreaming, 1000);
@@ -121,6 +122,7 @@ $(function() {
                     }else{
                         // dream is done; stop music
                         stopMusic();
+                        $(".overlay").css("opacity", "0");
                         is_dreaming = false;
                     }
                 }
