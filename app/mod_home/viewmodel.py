@@ -36,9 +36,10 @@ class ViewModel(object):
         }
 
     def show_image_upload(self, path):
-        img = file_io.get_image(path)
-        self.__image_upload = img
-        self.reset_window(True)
+        if not self.__is_locked:
+            img = file_io.get_image(path)
+            self.__image_upload = img
+            self.reset_window(True)
 
     def is_dreaming(self):
         return self.__start_dream
@@ -47,8 +48,7 @@ class ViewModel(object):
     '''' VIDEOSTREAM GENERATOR + FRAME MANIPULATION '''
     # HTTP VIDEO STREAM RESPONSE
     def video_feed(self):
-        # todo; if not development self.__camera
-        return Response(self.__gen(VideoCamera()), mimetype='multipart/x-mixed-replace; boundary=frame')
+        return Response(self.__gen(self.__camera), mimetype='multipart/x-mixed-replace; boundary=frame')
 
     # OUTPUT FRAME MANIPULATION
     def __gen(self, camera):
@@ -70,7 +70,9 @@ class ViewModel(object):
 
             # do various operations depending on what control is set
             if self.__show_general and not self.__is_image_upload:
-                frame = self.__determine_if_slideshow_and_return_frame(frame)
+                is_slideshow, frame = detect_faces(frame)
+                if is_slideshow:
+                    frame = get_slideshow_frame(frame)
 
             if self.__start_dream:
                 if type(frame) is bytearray: continue
@@ -98,14 +100,6 @@ class ViewModel(object):
 
     def __get_frame(self, camera):
         return camera.get_frame(False)
-
-    def __determine_if_slideshow_and_return_frame(self, frame):
-        # todo; split functionality in detect_faces and is_slideshow
-        is_slideshow, frame = detect_faces(frame)
-        if is_slideshow:
-            frame = get_slideshow_frame(frame)
-
-        return frame
 
     def __handle_dream(self, frame_dream, frame_dream_jpg):
         self.__frame_dream = frame_dream
@@ -162,7 +156,7 @@ class ViewModel(object):
         self.__all_layers = ""
         self.__default_layer = ""
         self.__layer = ""
-        # self.__camera = VideoCamera()
+        self.__camera = VideoCamera()
 
 
 vm = ViewModel()

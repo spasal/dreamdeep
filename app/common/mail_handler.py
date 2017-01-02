@@ -1,4 +1,4 @@
-from flask_mail import Mail, Message
+''''from flask_mail import Mail, Message
 import os, sys
 
 
@@ -36,4 +36,6 @@ def send_mail(recipient, file):
         msg.attach("dream.jpg", "image/jpg", img.read())
 
     mail.send(msg)
-
+'''
+def send_mail(recipient, file):
+    print("bluh")
