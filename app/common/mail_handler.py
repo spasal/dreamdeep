@@ -18,9 +18,6 @@ def init_mail_handler(app):
     ))
     mail = Mail(app)
 
-    print(os.environ.get('MAIL_USERNAME'))
-    print(os.environ.get('MAIL_PASSWORD'))
-
     return app, mail
 
 
@@ -38,7 +35,5 @@ def send_mail(recipient, file):
     with app.open_resource(download_path) as img:
         msg.attach("dream.jpg", "image/jpg", img.read())
 
-    print("before sending mail")
     mail.send(msg)
-    return "Sent"
 

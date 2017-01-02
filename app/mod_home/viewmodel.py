@@ -29,6 +29,7 @@ class ViewModel(object):
 
     def reset_window(self):
         if not self.__is_locked:
+            self.__is_image_upload = False
             self.__show_dream, self.__show_count_down = False, False
             self.__show_general = True
 
@@ -42,6 +43,20 @@ class ViewModel(object):
             "default_layer": self.__default_layer,
             "layer": layer
         }
+
+    def show_image_upload(self, path):
+        print(path)
+        print(self.__t)
+        print(type(self.__t))
+        print(self.__t.shape)
+        print(self.__t.shape[0])
+        print(self.__t.shape[1])
+        img = file_io.get_image(path)
+        print(img.shape)
+        print(img.shape[0])
+        print(img.shape[1])
+        self.__test = img
+        self.__is_image_upload = True
 
     def is_dreaming(self):
         return self.__start_dream
@@ -63,10 +78,16 @@ class ViewModel(object):
 
         while True:
             # get source frame to do operations on
-            frame = self.__get_frame(camera)
+            frame = ""
+            if not self.__is_image_upload:
+                frame = self.__get_frame(camera)
+                self.__t = frame
+            else:
+                frame = self.__test
+                print("show image upload")
 
             # do various operations depending on what control is set
-            if self.__show_general:
+            if self.__show_general and not self.__is_image_upload:
                 frame = self.__determine_if_slideshow_and_return_frame(frame)
 
             if self.__show_dream:
@@ -82,7 +103,7 @@ class ViewModel(object):
 
             if self.__show_count_down:
                 if type(frame) is bytearray: continue
-                frame = self.__count_down(self.__start_time, self.__count, camera, frame)
+                frame = self.__count_down(self.__start_time, self.__count, camera, frame.copy())
 
             # output the result in stream
             yield self.__get_jpeg_bytestream(camera.convert_to_jpeg, frame)
@@ -116,7 +137,8 @@ class ViewModel(object):
     def __count_down(self, start_time, count, camera, frame):
         elapsed = int(time.time() - start_time)
         resting = count - elapsed
-        cv2.putText(img=frame, text=str(resting), org=(300, 300), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=4, thickness=4, color=(255, 255, 255))
+        org = (int(frame.shape[1] / 2), int(frame.shape[0] / 2))
+        cv2.putText(img=frame, text=str(resting), org=org, fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=4, thickness=4, color=(255, 255, 255))
 
         if resting <= 0:
             self.__show_count_down = False
@@ -143,17 +165,16 @@ class ViewModel(object):
         file_io.save_exif_file(userdata)
 
     def __init__(self):
-        print("---INIT INIT INIT")
         self.__show_general = True
 
         self.__show_dream = False
         self.__show_count_down = False
         self.__start_dream = False
+        self.__is_image_upload = False
 
         self.__is_locked = False
 
         self.__count = 3
-        self.__duplicate_show = False
 
         self.__iterations = 10
         self.__layers = ""

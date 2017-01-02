@@ -1,4 +1,5 @@
 from PIL import Image
+import numpy
 import sys, os, json
 import glob
 import piexif
@@ -90,3 +91,19 @@ def get_images_as_byte_array(path, extension):
             image_list.append(b)
 
     return image_list
+
+def get_image(path):
+    print("downloading file")
+    img = Image.open(path)
+    print(img.format, img.size, img.mode)
+    img.show()
+    arr = numpy.array(img)
+    print(arr)
+    print(type(arr))
+    print(arr.shape)
+
+    return arr
+
+def __PIL_to_array(img):
+    return numpy.array(img.getdata(),
+                    numpy.uint8).reshape(img.size[1], img.size[0], 3)

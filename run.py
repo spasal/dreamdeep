@@ -9,6 +9,7 @@ app, mail = mail_handler.init_mail_handler(app)
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 
+from app.mod_home.viewmodel import vm
 
 @app.route("/upload", methods=["POST"])
 def upload():
@@ -26,6 +27,7 @@ def upload():
         print(destination)
 
         file.save(destination)
+        vm.show_image_upload(destination)
 
     return redirect(url_for('mod_home.index'))
 
