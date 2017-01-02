@@ -1,4 +1,5 @@
 from PIL import Image
+import numpy
 import sys, os, json
 import glob
 import piexif
@@ -90,3 +91,18 @@ def get_images_as_byte_array(path, extension):
             image_list.append(b)
 
     return image_list
+
+def get_image(path):
+    print("downloading file")
+    pil_image = Image.open(path).convert('RGB')
+    pil_image = __resize_image(pil_image, 640)
+    open_cv_image = numpy.array(pil_image)
+    open_cv_image = open_cv_image[:, :, ::-1].copy()
+
+    return open_cv_image
+
+def __resize_image(source, basewidth):
+    wpercent = (basewidth / float(source.size[0]))
+    hsize = int((float(source.size[1])*float(wpercent)))
+    img = source.resize((basewidth, hsize), Image.ANTIALIAS)
+    return img

@@ -72,3 +72,9 @@
 #stream{
 	max-width: 100%;
 }
+
+
+/* todo, mediaqueries */
+.f-width{
+	width: 100%;
+}

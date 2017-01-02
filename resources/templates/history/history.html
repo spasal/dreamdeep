@@ -37,11 +37,18 @@
 					<div class="caption text-center">
 						<b>{{ request['layer'] }}</b>
 					</div>
-					<div class="text-center">
-						<a href="/history/del/{{ request['id'] }}"><button class="btn btn-alt">delete</button></a>
-						<button class="btn btn-alt member" value="{{ request['id'] }}">member</button></a>
-						<a href="/history/fav/{{ request['id'] }}"><button {% if request["is_favorite"] == True %} class="btn btn-alt-primary" {% else %} class="btn btn-alt" {% endif %}>favor</button></a>
+					<div class="col-xs-12">
+						<div class="col-xs-4">
+							<a href="/history/del/{{ request['id'] }}"><button class="btn btn-alt center-block">delete</button></a>
+						</div>
+						<div class="col-xs-4">
+							<button class="btn btn-alt center-block member" value="{{ request['id'] }}">member</button>
+						</div>
+						<div class="col-xs-4">
+							<a href="/history/fav/{{ request['id'] }}"><button {% if request["is_favorite"] == True %} class="btn btn-alt-primary  center-block" {% else %} class="btn btn-alt  center-block" {% endif %}>favor</button></a>
+						</div>
 					</div>
+					<p>a</p>
 				</div>
 			</div>
 		{% endfor %}

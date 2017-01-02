@@ -48,13 +48,16 @@
 					<!-- controls -->
 					<div class="col-sm-12 margin-top">
 						<div class="col-xs-4">
-							<button type="submit" class="btn btn-alt center-block" id="start_dream">Dream</button>
+							<button type="submit" class="btn btn-alt center-block f-width" id="start_dream">Dream</button>
 						</div>
 						<div class="col-xs-4">
-							<button type="submit" class="btn btn-alt center-block" id="reset_dream">Reset</button>
+							<button type="submit" class="btn btn-alt center-block f-width" id="reset_dream">Reset</button>
 						</div>
 						<div class="col-xs-4">
-							<button type="submit" class="btn btn-alt center-block" id="upload_dream">Upload</button>
+							<form id="upload-form" action="{{ url_for('upload')}}" method="POST" enctype="multipart/form-data" class="center-block">
+								<label for="files" class="btn btn-alt center-block f-width">Upload</label>
+								<input type="file" id="files" style="display: none" name="file" accept="image/*" onchange="this.form.submit()">
+							</form>
 						</div>
 					</div>
 				</div>
@@ -118,6 +121,8 @@
 
 	<script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.1.1.min.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/file/jquery.ui.widget.js') }}"></script>
+
 	<script type="text/javascript" src="{{ url_for('static', filename='js/app.js') }}"></script>
 </body>
 </html>
