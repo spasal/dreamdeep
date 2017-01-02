@@ -42,7 +42,7 @@
 							<a href="/history/del/{{ request['id'] }}"><button class="btn btn-alt center-block">delete</button></a>
 						</div>
 						<div class="col-xs-4">
-							<button class="btn btn-alt center-block" value="{{ request['id'] }}">member</button>
+							<button class="btn btn-alt center-block member" value="{{ request['id'] }}">member</button>
 						</div>
 						<div class="col-xs-4">
 							<a href="/history/fav/{{ request['id'] }}"><button {% if request["is_favorite"] == True %} class="btn btn-alt-primary  center-block" {% else %} class="btn btn-alt  center-block" {% endif %}>favor</button></a>

@@ -18,6 +18,9 @@ def init_mail_handler(app):
     ))
     mail = Mail(app)
 
+    print(os.environ.get('MAIL_USERNAME'))
+    print(os.environ.get('MAIL_PASSWORD'))
+
     return app, mail
 
 

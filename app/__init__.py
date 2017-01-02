@@ -5,7 +5,7 @@ from config import config
 
 def create_app(environment):
     # configure flask webapp + assign static folder
-    app = Flask(__name__, static_url_path="", static_folder="../resources/static")
+    app = Flask(__name__, static_url_path="", static_folder="../resources/static", template_folder="../resources/templates")
     app.config.from_object(config[environment])
 
     # import modules

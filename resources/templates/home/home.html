@@ -48,32 +48,16 @@
 					<!-- controls -->
 					<div class="col-sm-12 margin-top">
 						<div class="col-xs-4">
-							<button type="submit" class="btn btn-alt center-block" id="start_dream">Dream</button>
+							<button type="submit" class="btn btn-alt center-block f-width" id="start_dream">Dream</button>
 						</div>
 						<div class="col-xs-4">
-							<button type="submit" class="btn btn-alt center-block" id="reset_dream">Reset</button>
+							<button type="submit" class="btn btn-alt center-block f-width" id="reset_dream">Reset</button>
 						</div>
 						<div class="col-xs-4">
-							<button type="submit" class="btn btn-alt center-block" id="upload_dream">Upload</button>
-						</div>
-						<div class="col-xs-4">
-							<br />
-							<span class="btn btn-success fileinput-button">
-								<i class="glyphicon glyphicon-plus"></i>
-								<span>Select files...</span>
-								<!-- The file input field used as target for the file upload widget -->
-								<input id="fileupload" name="files[]" multiple="" type="file">
-							</span>
-
-							<br /><br />
-
-							<!-- The global progress bar -->
-							<div id="progress" class="progress">
-								<div class="progress-bar progress-bar-success" style="width: 100%;"></div>
-							</div>
-
-							<!-- The container for the uploaded files -->
-							<div id="files" class="files"><p>1483007474.0521321.jpg</p></div>
+							<form id="upload-form" action="{{ url_for('upload')}}" method="POST" enctype="multipart/form-data" class="center-block">
+								<label for="files" class="btn btn-alt center-block f-width">Upload</label>
+								<input type="file" id="files" style="display: none" name="file" accept="image/*" onchange="this.form.submit()">
+							</form>
 						</div>
 					</div>
 				</div>
