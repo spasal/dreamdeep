@@ -32,3 +32,16 @@ http://codehandbook.org/python-flask-jquery-ajax-post/
 # http://stackoverflow.com/questions/30901998/threading-true-with-flask-socketio
 
 http://askubuntu.com/questions/127056/where-is-bashrc
+
+
+
+
+'''' FILE UPLOAD
+http://bboe-image.herokuapp.com/
+https://github.com/bboe/flask-image-uploader
+
+https://github.com/blueimp/jQuery-File-Upload
+http://blueimp.github.io/jQuery-File-Upload/basic.html
+https://github.com/blueimp/jQuery-File-Upload/wiki/Basic-plugin
+https://github.com/ngoduykhanh/flask-file-uploader
+'''
