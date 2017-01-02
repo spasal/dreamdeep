@@ -27,9 +27,9 @@ class ViewModel(object):
             print("- %s " % self.__show_general)
             self.__is_locked, self.__show_count_down = True, True
 
-    def reset_window(self):
+    def reset_window(self, is_image_upload=False):
         if not self.__is_locked:
-            self.__is_image_upload = False
+            self.__is_image_upload = is_image_upload
             self.__show_dream, self.__show_count_down = False, False
             self.__show_general = True
 
@@ -45,18 +45,9 @@ class ViewModel(object):
         }
 
     def show_image_upload(self, path):
-        print(path)
-        print(self.__t)
-        print(type(self.__t))
-        print(self.__t.shape)
-        print(self.__t.shape[0])
-        print(self.__t.shape[1])
         img = file_io.get_image(path)
-        print(img.shape)
-        print(img.shape[0])
-        print(img.shape[1])
-        self.__test = img
-        self.__is_image_upload = True
+        self.__image_upload = img
+        self.reset_window(True)
 
     def is_dreaming(self):
         return self.__start_dream
@@ -78,32 +69,30 @@ class ViewModel(object):
 
         while True:
             # get source frame to do operations on
-            frame = ""
-            if not self.__is_image_upload:
+            if self.__show_dream:
+                frame = self.__frame_dream
+            elif self.__is_image_upload:
+                frame = self.__image_upload.copy()
+            elif not self.__is_image_upload:
                 frame = self.__get_frame(camera)
-                self.__t = frame
-            else:
-                frame = self.__test
-                print("show image upload")
+
 
             # do various operations depending on what control is set
             if self.__show_general and not self.__is_image_upload:
                 frame = self.__determine_if_slideshow_and_return_frame(frame)
 
-            if self.__show_dream:
-                frame = self.__frame_dream
-
             if self.__start_dream:
                 if type(frame) is bytearray: continue
                 yield self.__get_jpeg_bytestream(camera.convert_to_jpeg, frame.copy())
+                yield self.__get_jpeg_bytestream(camera.convert_to_jpeg, frame.copy())
 
                 frame = dream_generator.render_deepdream(self.__layer, frame, self.__iterations)
-                frame_jpg = camera.convert_to_jpeg(frame)
-                self.__handle_dream(frame, frame_jpg)
+                self.__handle_dream(frame, camera.convert_to_jpeg(frame))
 
             if self.__show_count_down:
                 if type(frame) is bytearray: continue
                 frame = self.__count_down(self.__start_time, self.__count, camera, frame.copy())
+
 
             # output the result in stream
             yield self.__get_jpeg_bytestream(camera.convert_to_jpeg, frame)
@@ -132,6 +121,7 @@ class ViewModel(object):
         self.__save_dream(frame_dream_jpg, self.__layer, self.__iterations)
 
         self.__start_dream, self.__is_locked = False, False
+        self.__show_general, self.__is_image_upload = False, False
         self.__show_dream = True
 
     def __count_down(self, start_time, count, camera, frame):

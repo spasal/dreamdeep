@@ -94,16 +94,15 @@ def get_images_as_byte_array(path, extension):
 
 def get_image(path):
     print("downloading file")
-    img = Image.open(path)
-    print(img.format, img.size, img.mode)
-    img.show()
-    arr = numpy.array(img)
-    print(arr)
-    print(type(arr))
-    print(arr.shape)
+    pil_image = Image.open(path).convert('RGB')
+    pil_image = __resize_image(pil_image, 640)
+    open_cv_image = numpy.array(pil_image)
+    open_cv_image = open_cv_image[:, :, ::-1].copy()
 
-    return arr
+    return open_cv_image
 
-def __PIL_to_array(img):
-    return numpy.array(img.getdata(),
-                    numpy.uint8).reshape(img.size[1], img.size[0], 3)
+def __resize_image(source, basewidth):
+    wpercent = (basewidth / float(source.size[0]))
+    hsize = int((float(source.size[1])*float(wpercent)))
+    img = source.resize((basewidth, hsize), Image.ANTIALIAS)
+    return img
