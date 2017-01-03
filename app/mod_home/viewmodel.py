@@ -48,14 +48,16 @@ class ViewModel(object):
     '''' VIDEOSTREAM GENERATOR + FRAME MANIPULATION '''
     # HTTP VIDEO STREAM RESPONSE
     def video_feed(self):
-        return Response(self.__gen(self.__camera), mimetype='multipart/x-mixed-replace; boundary=frame')
+        return Response(self.__gen(self.__camera, self.__dream_generator), mimetype='multipart/x-mixed-replace; boundary=frame')
 
     # OUTPUT FRAME MANIPULATION
-    def __gen(self, camera):
+    def __gen(self, camera, dream_generator2):
+        print(dream_generator2)
         dream_generator = Dream('resources/app_data/inception')
         self.__layers = dream_generator.get_featured_layers()
         self.__all_layers = dream_generator.get_all_layers()
         self.__default_layer = dream_generator.get_default_layer()
+        print(dream_generator)
 
         while True:
             # get source frame to do operations on
@@ -79,6 +81,7 @@ class ViewModel(object):
                 yield self.__get_jpeg_bytestream(camera.convert_to_jpeg, frame.copy())
 
                 frame = dream_generator.render_deepdream(self.__layer, frame, self.__iterations)
+                frame = dream_generator2.render_deepdream(self.__layer, frame, self.__iterations)
                 self.__handle_dream(frame, camera.convert_to_jpeg(frame))
 
             if self.__show_count_down:
@@ -158,6 +161,12 @@ class ViewModel(object):
         self.__layer = ""
         self.__camera = VideoCamera()
         init_slideshow()
+
+        self.__dream_generator = Dream('resources/app_data/inception')
+        print(self.__dream_generator)
+        self.__layers = self.__dream_generator.get_featured_layers()
+        self.__all_layers = self.__dream_generator.get_all_layers()
+        self.__default_layer = self.__dream_generator.get_default_layer()
 
 
 vm = ViewModel()

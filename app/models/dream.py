@@ -6,6 +6,16 @@ import zipfile
 import matplotlib.pyplot as plt
 
 
+''''
+bug fixing links:
+https://www.tensorflow.org/how_tos/
+http://stackoverflow.com/questions/39352865/resetting-default-graph-does-not-remove-variables
+https://www.tensorflow.org/api_docs/python/framework/
+http://stackoverflow.com/questions/36551936/valueerror-tensor-a-must-be-from-the-same-graph-as-tensor-b
+http://stackoverflow.com/questions/39975542/valueerror-tensor-must-be-from-the-same-graph-as-tensor-but-both-use-default
+'''
+
+
 class Dream(object):
     """ Dream easily on google's inception
 
@@ -29,6 +39,8 @@ class Dream(object):
                          iter_n=10, step=1.5, octave_n=4, octave_scale=1.4):
 
         t_obj = self.__get_squared_t_layer(layer)
+        print("t_obj %s" % t_obj)
+        print("tf %s " % tf)
         t_score = tf.reduce_mean(t_obj)  # define optimazation objective
         t_grad = tf.gradients(t_score, self.__t_input)[0]  # the power of automation
         frm = np.float32(frm)
@@ -53,7 +65,7 @@ class Dream(object):
             for it in range(iter_n):  # 10
                 g = self.__calc_grad_tiled(frm0, t_grad)
                 frm0 += g * (step / (np.abs(g).mean() + 1e-7))
-                print('iteration: ', it, ' for octave: ', octave)
+                # print('iteration: ', it, ' for octave: ', octave)
 
         # return dreamed frame
         frm0 = frm0 / 255.0
@@ -155,12 +167,14 @@ class Dream(object):
     # 2 create TF session and load the model
     def __create_TF_session_and_model(self, data_dir, model_fn):
         print("INITIALIZING INCEPTION")
+        tf.reset_default_graph()
         graph = tf.Graph()
         sess = tf.InteractiveSession(graph=graph)
 
         with tf.gfile.FastGFile(os.path.join(data_dir, model_fn), 'rb') as f:
             graph_def = tf.GraphDef()
             graph_def.ParseFromString(f.read())
+
 
         imagenet_mean = 117.0
         t_input = tf.placeholder(np.float32, name='input')
@@ -170,6 +184,7 @@ class Dream(object):
         layers = [op.name for op in graph.get_operations() if op.type ==
                   'Conv2D' and 'import/' in op.name]
         feature_nums = [int(graph.get_tensor_by_name(name + ':0').get_shape()[-1]) for name in layers]
+
 
         self.__graph = graph
         self.__sess = sess
