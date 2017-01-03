@@ -1,10 +1,9 @@
-''''from flask_mail import Mail, Message
+from flask_mail import Mail, Message
 import os, sys
 
 
 def init_mail_handler(app):
     app.config.update(dict(
-        DEBUG = True,
         # mail server
         MAIL_SERVER = 'smtp.googlemail.com',
         MAIL_PORT = 465,
@@ -36,6 +35,3 @@ def send_mail(recipient, file):
         msg.attach("dream.jpg", "image/jpg", img.read())
 
     mail.send(msg)
-'''
-def send_mail(recipient, file):
-    print("bluh")

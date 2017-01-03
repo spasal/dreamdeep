@@ -56,7 +56,6 @@ class ViewModel(object):
         self.__layers = dream_generator.get_featured_layers()
         self.__all_layers = dream_generator.get_all_layers()
         self.__default_layer = dream_generator.get_default_layer()
-        init_slideshow()
 
         while True:
             # get source frame to do operations on
@@ -140,6 +139,7 @@ class ViewModel(object):
         file_io.save_exif_file(userdata)
 
     def __init__(self):
+        print("INIT __INIT__")
         self.__show_general = True
 
         self.__show_dream = False
@@ -157,6 +157,7 @@ class ViewModel(object):
         self.__default_layer = ""
         self.__layer = ""
         self.__camera = VideoCamera()
+        init_slideshow()
 
 
 vm = ViewModel()

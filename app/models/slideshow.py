@@ -9,7 +9,6 @@ __index = 0
 
 
 def init_slideshow():
-    print("init")
     global __frames
     __frames = file_io.get_images_as_byte_array("/resources/static/uploads/favorites", ".jpg")
 

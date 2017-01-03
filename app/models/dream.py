@@ -154,7 +154,7 @@ class Dream(object):
 
     # 2 create TF session and load the model
     def __create_TF_session_and_model(self, data_dir, model_fn):
-        print("initializing inception")
+        print("INITIALIZING INCEPTION")
         graph = tf.Graph()
         sess = tf.InteractiveSession(graph=graph)
 
