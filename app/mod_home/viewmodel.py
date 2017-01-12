@@ -36,7 +36,9 @@ class ViewModel(object):
         }
 
     def show_image_upload(self, path):
+        print("show image upload 1")
         if not self.__is_locked:
+            print("show image upload 1")
             img = file_io.get_image(path)
             self.__image_upload = img
             self.reset_window(True)
@@ -81,7 +83,7 @@ class ViewModel(object):
                 yield self.__get_jpeg_bytestream(camera.convert_to_jpeg, frame.copy())
 
                 frame = dream_generator.render_deepdream(self.__layer, frame, self.__iterations)
-                frame = dream_generator2.render_deepdream(self.__layer, frame, self.__iterations)
+                # frame = dream_generator2.render_deepdream(self.__layer, frame, self.__iterations)
                 self.__handle_dream(frame, camera.convert_to_jpeg(frame))
 
             if self.__show_count_down:

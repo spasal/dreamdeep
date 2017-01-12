@@ -38,6 +38,7 @@ def handle_is_dream():
 
 @app.route('/save_dream', methods=['POST'])
 def handle_save():
+    print("MAIL")
     data = request.get_json(force=True)
     recipient = data["recipient"]
     filename = data["filename"]

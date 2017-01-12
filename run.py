@@ -13,12 +13,14 @@ from app.mod_home.viewmodel import vm
 
 @app.route("/upload", methods=["POST"])
 def upload():
+    print("upload")
     target = os.path.join(app_root, "resources", "static", "uploads", "uploads")
 
     if not os.path.isdir(target):
         os.mkdir(target)
-
-    if not vm.is_dreaming:
+    print("uploadd")
+    if not vm.is_dreaming():
+        print("uploaddd")
         for file in request.files.getlist("file"):
             print(file)
             filename = str(time.time()) + os.path.splitext(file.filename)[1]

@@ -32,7 +32,7 @@
 	<div class="container" style="margin-top: 50px">
 		{% for request in history: %}
 			<div class="col-md-6 col-xs-12">
-				<div class="thumbnail">
+				<div class="thumbnail col-xs-12">
 					<img src="{{ url_for('static', filename='uploads/history/') }}{{ request['id'] }}" alt="">
 					<div class="caption text-center">
 						<b>{{ request['layer'] }}</b>
@@ -48,7 +48,6 @@
 							<a href="/history/fav/{{ request['id'] }}"><button {% if request["is_favorite"] == True %} class="btn btn-alt-primary  center-block" {% else %} class="btn btn-alt  center-block" {% endif %}>favor</button></a>
 						</div>
 					</div>
-					<p>a</p>
 				</div>
 			</div>
 		{% endfor %}
