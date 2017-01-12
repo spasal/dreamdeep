@@ -1,0 +1,8 @@
+// Place your settings in this file to overwrite default and user settings.
+{
+    // Run which python in activated virtualenv
+    "python.pythonPath": "/home/spasal/Environments/dreamdeep/env/bin/python",
+    "python.autoComplete.extraPaths": [
+        "/home/spasal/Environments/dreamdeep/env/lib/python3.5/site-packages"
+    ]
+}

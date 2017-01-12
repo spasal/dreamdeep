@@ -6,16 +6,6 @@ import zipfile
 import matplotlib.pyplot as plt
 
 
-''''
-bug fixing links:
-https://www.tensorflow.org/how_tos/
-http://stackoverflow.com/questions/39352865/resetting-default-graph-does-not-remove-variables
-https://www.tensorflow.org/api_docs/python/framework/
-http://stackoverflow.com/questions/36551936/valueerror-tensor-a-must-be-from-the-same-graph-as-tensor-b
-http://stackoverflow.com/questions/39975542/valueerror-tensor-must-be-from-the-same-graph-as-tensor-but-both-use-default
-'''
-
-
 class Dream(object):
     """ Dream easily on google's inception
 

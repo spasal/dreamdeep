@@ -33,13 +33,17 @@ $(function() {
     };
 
 
-    var highestDiv = 0;
-    $(".item").each(function(){
-        if($(this).height() > highestDiv){
-            highestDiv = $(this).height()
-        }
+
+    $(".row-switch").each(function(){
+        var highestDiv = 0;
+        $(this).find(".item").each(function(){
+            if($(this).height() > highestDiv){
+                highestDiv = $(this).height()
+            }
+        });
+
+        $(this).find(".item").each(function(){
+            $(this).height(highestDiv);
+        });
     });
-
-    $(".item").height(highestDiv);
-
 });
