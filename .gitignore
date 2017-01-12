@@ -3,11 +3,11 @@ __pycache__/
 *.py[cod]
 *.pyc
 
-tests/*
-# env/lib/python3.5/site-packages/tensorflow/
-# __pywrap__tensorflow.so
 env/lib/python3.5/site-packages/*
 env/lib64/python3.5/site-packages/*
+extra/ignore/*
+extra/tests/*
+extra/todo/*
 
 resources/app_data/inception/*
 resources/static/uploads/uploads/*
