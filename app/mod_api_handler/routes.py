@@ -25,7 +25,7 @@ def handle_default():
     has_return_values = False
     while not has_return_values:
         res = vm.get_default_control_values()
-        if res["layers"] != "" and res["all_layers"] != "" and res["default_layer"] != "" and res["layer"] != "":
+        if res["default_layer"] != "":
             has_return_values = True
             return json.dumps(res)
 

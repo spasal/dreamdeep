@@ -36,7 +36,7 @@ class Dream(object):
     # CORE FUNCTIONS
     # 0 render the deep dream
     def render_deepdream(self, layer, frm,
-                         iter_n=10, step=1.5, octave_n=4, octave_scale=1.4):
+                         iter_n=10, octave_n=4, octave_scale=1.4, step=1.5):
 
         t_obj = self.__get_squared_t_layer(layer)
         t_score = tf.reduce_mean(t_obj)  # define optimazation objective

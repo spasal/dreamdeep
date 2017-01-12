@@ -2,7 +2,8 @@ from app.models import init_slideshow, get_slideshow_frame
 from app.models import VideoCamera, Dream, detect_faces
 from app.common import file_io
 from flask import Response
-import datetime, time
+import datetime
+import time
 import cv2
 import os
 
@@ -11,8 +12,7 @@ class ViewModel(object):
     '''' PUBLIC VIDEOSTREAMER PARAMETER MANIPULATION '''
     def start_dream(self, data):
         if not self.__is_locked:
-            self.__iterations, self.__layer = int(data['iteration']), str(data['layer'])
-            self.__start_time = time.time()
+            self.__prepare_parameters(data)
 
             self.__show_general, self.__show_dream, self.__start_dream = False, False, False
             self.__is_locked, self.__show_count_down = True, True
@@ -24,12 +24,9 @@ class ViewModel(object):
             if not self.__is_image_upload:
                 self.__show_general = True
             else:
-                print(self.__is_first_reset)
                 if not self.__is_first_reset:
-                    print("first reset")
                     self.__is_first_reset = True
                 else:
-                    print("final reset")
                     self.__show_general = True
                     self.__is_image_upload = False
                     self.__is_first_reset = False
@@ -43,9 +40,9 @@ class ViewModel(object):
             "all_layers": self.__all_layers,
             "default_layer": self.__default_layer,
             "layer": layer,
-            "octave_n": "",
-            "octave_scale": "",
-            "step": ""
+            "octave_n": self.__options[0],
+            "octave_scale": self.__options[1],
+            "step": self.__options[2]
         }
 
     def show_image_upload(self, path):
@@ -93,7 +90,8 @@ class ViewModel(object):
                 yield self.__get_jpeg_bytestream(camera.convert_to_jpeg, frame.copy())
                 yield self.__get_jpeg_bytestream(camera.convert_to_jpeg, frame.copy())
 
-                frame = dream_generator.render_deepdream(self.__layer, frame, self.__iterations)
+                frame = dream_generator.render_deepdream(
+                    self.__layer, frame, self.__iterations, self.__options[0], self.__options[1], self.__options[2])
                 self.__handle_dream(frame, camera.convert_to_jpeg(frame))
 
             if self.__show_count_down:
@@ -154,6 +152,12 @@ class ViewModel(object):
 
         file_io.save_exif_file(userdata)
 
+    def __prepare_parameters(self, data):
+        self.__iterations, self.__layer = int(data['iteration']), str(data['layer'])
+        self.__options[0], self.__options[1] = int(data['octave_n']), float(data['octave_scale'])
+        self.__options[2] = float(data['step'])
+        self.__start_time = time.time()
+
     def __init__(self):
         self.__show_general = True
 
@@ -167,11 +171,12 @@ class ViewModel(object):
 
         self.__count = 3
 
-        self.__iterations = 10
+        self.__iterations = 25
         self.__layers = ""
         self.__all_layers = ""
         self.__default_layer = ""
         self.__layer = ""
+        self.__options = [4, 1.4, 1.5]
         self.__camera = VideoCamera()
         init_slideshow()
 

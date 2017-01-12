@@ -14,6 +14,12 @@ $(function() {
 
 
     // get dream parameters
+    def_layer = ""
+    def_iteration = ""
+    def_octave_n = ""
+    def_octave_sc = ""
+    def_step = ""
+
     function getDefaultValues() {
         $.ajax({
             type: "GET",
@@ -22,9 +28,9 @@ $(function() {
             success: function(response) {
                 var obj = jQuery.parseJSON(response);
                 console.log(obj)
-                console.log(obj.layer)
                 if (obj.layers != "" && obj.all_layers != "" && obj.default_layer != "") {
                     fillDefaultValues(obj.iteration, obj.layers, obj.all_layers, obj.default_layer, obj.layer);
+                    fillAdvancedDefaultValues(obj.octave_n, obj.octave_scale, obj.step);
                     initListeners();
                 } else {
                     setTimeout(getDefaultValues, 500);
@@ -37,9 +43,12 @@ $(function() {
         });
 
         function fillDefaultValues(iteration, fet_layers, all_layers, default_layer, layer) {
-            $("#iteration").val(iteration);
+            def_layer = default_layer;
+            def_iteration = iteration;
+
+            $("#iteration").val(def_iteration);
             $("#layer").val(layer);
-            $("#default").val(default_layer);
+            $("#default").val(def_layer);
 
             $(fet_layers).each(function(index, item) {
                 $("#dropdown-fet_layers").append('<div class="dropdown-item"><a> ' + item + '</a></div>');
@@ -51,9 +60,24 @@ $(function() {
 
             $(".dropdown-layers").dropdown();
         }
+        function fillAdvancedDefaultValues(octave_n, octave_scale, step){
+            def_octave_n = octave_n;
+            def_octave_sc = octave_scale;
+            def_step = step;
+
+            $("#octave_n").val(def_octave_n);
+            $("#octave_scale").val(def_octave_sc);
+            $("#step").val(def_step);
+        }
         function initListeners() {
             $("#default").click(function() {
                 $("#layer").val($.trim($(this).val()));
+
+                $("#iteration").val(def_iteration);
+                $("#default").val(def_layer);
+                $("#octave_n").val(def_octave_n);
+                $("#octave_scale").val(def_octave_sc);
+                $("#step").val(def_step);
             });
 
             $(".dropdown-layers").on('click', '.dropdown-item a', function() {
@@ -72,7 +96,10 @@ $(function() {
         startMusic()
         data = {
             iteration: $("#iteration").val(),
-            layer: $("#layer").val()
+            layer: $("#layer").val(),
+            octave_n: $("#octave_n").val(),
+            octave_scale: $("#octave_scale").val(),
+            step: $("#step").val()
         }
 
         $.ajax({
