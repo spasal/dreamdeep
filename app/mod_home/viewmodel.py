@@ -42,7 +42,10 @@ class ViewModel(object):
             "layers": self.__layers,
             "all_layers": self.__all_layers,
             "default_layer": self.__default_layer,
-            "layer": layer
+            "layer": layer,
+            "octave_n": "",
+            "octave_scale": "",
+            "step": ""
         }
 
     def show_image_upload(self, path):

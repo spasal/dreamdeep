@@ -86,3 +86,17 @@
 .thumbnail img{
 	border-radius: 5px;
 }
+
+
+
+
+.panel-body-2{
+	padding-top: 0px;
+}
+.panel-heading-2{
+	margin-bottom: 15px;
+}
+
+#basic-row{
+	margin-bottom: 30px;
+}

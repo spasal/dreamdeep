@@ -70,41 +70,76 @@
 				<div class="panel-heading">
 					<h2 class="panel-title">Set your Dream</h3>
 				</div>
-				<div class="panel-body">
-					<div class="col-md-6">
-						<form class="form-horizontal">
-							<div class="form-group">
-								<label for="iteration" class="col-sm-3 control-label">Iterations</label>
-								<div class="col-sm-9">
-									<input type="text" class="form-control" id="iteration" placeholder="5-30 iterations">
+				<div class="panel-body panel-body-2">
+					<!-- basic settings-->
+					<div class="row" id="basic-row">
+						<div class="col-md-12 panel-heading panel-heading-2"><h3 class="panel-title">Basic Settings</h3></div>
+						<div class="col-md-6">
+							<form class="form-horizontal">
+								<div class="form-group">
+									<label for="iteration" class="col-sm-3 control-label">Iterations</label>
+									<div class="col-sm-9">
+										<input type="text" class="form-control" id="iteration" placeholder="10-200 iterations">
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="layer" class="col-sm-3 control-label">Layer</label>
+									<div class="col-sm-9">
+										<input type="text" class="form-control" id="layer" placeholder="Your selected layer will come here">
+									</div>
+								</div>
+							</form>
+						</div>
+						<div class="col-md-6">
+							<div>
+								<button type="button" class="btn" id="default">Default</button>
+							</div>
+							<div class="btn-group">
+								<button type="button" class="btn">Featured Layers</button>
+								<button type="button" class="btn dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									<span class="sr-only">Toggle Dropdown</span>
+								</button>
+								<div class="dropdown-menu dropdown-layers" id="dropdown-fet_layers">
 								</div>
 							</div>
-							<div class="form-group">
-								<label for="layer" class="col-sm-3 control-label">Layer</label>
-								<div class="col-sm-9">
-									<input type="text" class="form-control" id="layer" placeholder="Your selected layer will come here">
+							<div class="btn-group">
+								<button type="button" class="btn">All Layers</button>
+								<button type="button" class="btn dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									<span class="sr-only">Toggle Dropdown</span>
+								</button>
+								<div class="dropdown-menu dropdown-layers" id="dropdown-all_layers">
 								</div>
 							</div>
-						</form>
+						</div>
 					</div>
-					<div class="col-md-6">
-						<div>
-							<button type="button" class="btn" id="default">Default</button>
+
+					<!-- advanced settings -->
+					<div class="row">
+						<div class="col-md-12 panel-heading panel-heading-2"><h3 class="panel-title">Advanced Settings</h3></div>
+						<div class="col-md-6">
+							<form class="form-horizontal">
+								<div class="form-group">
+									<label for="octave_n" class="col-sm-3 control-label"># of octaves</label>
+									<div class="col-sm-9">
+										<input type="text" class="form-control" id="octave_n" placeholder="4">
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="octave_scale" class="col-sm-3 control-label">octave scale</label>
+									<div class="col-sm-9">
+										<input type="text" class="form-control" id="octave_scale" placeholder="Your selected layer will come here">
+									</div>
+								</div>
+							</form>
 						</div>
-						<div class="btn-group">
-							<button type="button" class="btn">Featured Layers</button>
-							<button type="button" class="btn dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-								<span class="sr-only">Toggle Dropdown</span>
-							</button>
-							<div class="dropdown-menu dropdown-layers" id="dropdown-fet_layers">
-							</div>
-						</div>
-						<div class="btn-group">
-							<button type="button" class="btn">All Layers</button>
-							<button type="button" class="btn dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-								<span class="sr-only">Toggle Dropdown</span>
-							</button>
-							<div class="dropdown-menu dropdown-layers" id="dropdown-all_layers">
+						<div class="col-md-6">
+							<form class="form-horizontal">
+								<div class="form-group">
+									<label for="step" class="col-sm-3 control-label">step</label>
+									<div class="col-sm-9">
+										<input type="text" class="form-control" id="step" placeholder="5-30 iterations">
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>

@@ -32,4 +32,14 @@ $(function() {
         return pattern.test(emailAddress);
     };
 
+
+    var highestDiv = 0;
+    $(".item").each(function(){
+        if($(this).height() > highestDiv){
+            highestDiv = $(this).height()
+        }
+    });
+
+    $(".item").height(highestDiv);
+
 });

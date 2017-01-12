@@ -2,7 +2,8 @@ from flask import render_template, redirect, url_for, request
 from app.mod_home import home_blueprint as app
 from app.mod_home.viewmodel import vm
 from config import app_root
-import os, time
+import time
+import os
 
 
 @app.route('/')
@@ -25,10 +26,8 @@ def upload():
 
     if not vm.is_dreaming():
         for file in request.files.getlist("file"):
-            print(file)
             filename = str(time.time()) + os.path.splitext(file.filename)[1]
             destination = os.path.join(target, filename)
-            print(destination)
 
             file.save(destination)
             vm.show_image_upload(destination)
