@@ -5,9 +5,10 @@ __pycache__/
 
 env/lib/python3.5/site-packages/*
 env/lib64/python3.5/site-packages/*
-extra/ignore/*
-extra/tests/*
-extra/todo/*
+z_extra/ignore/*
+z_extra/tests/*
+z_extra/todo/*
+.vscode/*
 
 resources/app_data/inception/*
 resources/static/uploads/uploads/*
