@@ -39,8 +39,6 @@ class Dream(object):
                          iter_n=10, step=1.5, octave_n=4, octave_scale=1.4):
 
         t_obj = self.__get_squared_t_layer(layer)
-        print("t_obj %s" % t_obj)
-        print("tf %s " % tf)
         t_score = tf.reduce_mean(t_obj)  # define optimazation objective
         t_grad = tf.gradients(t_score, self.__t_input)[0]  # the power of automation
         frm = np.float32(frm)
@@ -65,7 +63,7 @@ class Dream(object):
             for it in range(iter_n):  # 10
                 g = self.__calc_grad_tiled(frm0, t_grad)
                 frm0 += g * (step / (np.abs(g).mean() + 1e-7))
-                # print('iteration: ', it, ' for octave: ', octave)
+                print('iteration: ', it, ' for octave: ', octave)
 
         # return dreamed frame
         frm0 = frm0 / 255.0
@@ -143,7 +141,7 @@ class Dream(object):
         self.__model_fn = 'tensorflow_inception_graph.pb'
 
         # dream parameters
-        self.__default_layer = 'mixed4d'
+        self.__default_layer = 'mixed4c'
         self.__default_channel = 139
 
 

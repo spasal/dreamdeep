@@ -15,14 +15,24 @@ class ViewModel(object):
             self.__start_time = time.time()
 
             self.__show_general, self.__show_dream, self.__start_dream = False, False, False
-            print("- %s " % self.__show_general)
             self.__is_locked, self.__show_count_down = True, True
 
-    def reset_window(self, is_image_upload=False):
+    def reset_window(self):
         if not self.__is_locked:
-            self.__is_image_upload = is_image_upload
             self.__show_dream, self.__show_count_down = False, False
-            self.__show_general = True
+
+            if not self.__is_image_upload:
+                self.__show_general = True
+            else:
+                print(self.__is_first_reset)
+                if not self.__is_first_reset:
+                    print("first reset")
+                    self.__is_first_reset = True
+                else:
+                    print("final reset")
+                    self.__show_general = True
+                    self.__is_image_upload = False
+                    self.__is_first_reset = False
 
     def get_default_control_values(self):
         layer = (self.__default_layer if self.__layer == "" else self.__layer)
@@ -36,12 +46,12 @@ class ViewModel(object):
         }
 
     def show_image_upload(self, path):
-        print("show image upload 1")
         if not self.__is_locked:
-            print("show image upload 1")
             img = file_io.get_image(path)
             self.__image_upload = img
-            self.reset_window(True)
+            self.__is_image_upload = True
+            self.__is_first_reset = False
+            self.reset_window()
 
     def is_dreaming(self):
         return self.__start_dream
@@ -50,16 +60,14 @@ class ViewModel(object):
     '''' VIDEOSTREAM GENERATOR + FRAME MANIPULATION '''
     # HTTP VIDEO STREAM RESPONSE
     def video_feed(self):
-        return Response(self.__gen(self.__camera, self.__dream_generator), mimetype='multipart/x-mixed-replace; boundary=frame')
+        return Response(self.__gen(self.__camera), mimetype='multipart/x-mixed-replace; boundary=frame')
 
     # OUTPUT FRAME MANIPULATION
-    def __gen(self, camera, dream_generator2):
-        print(dream_generator2)
+    def __gen(self, camera):
         dream_generator = Dream('resources/app_data/inception')
         self.__layers = dream_generator.get_featured_layers()
         self.__all_layers = dream_generator.get_all_layers()
         self.__default_layer = dream_generator.get_default_layer()
-        print(dream_generator)
 
         while True:
             # get source frame to do operations on
@@ -83,7 +91,6 @@ class ViewModel(object):
                 yield self.__get_jpeg_bytestream(camera.convert_to_jpeg, frame.copy())
 
                 frame = dream_generator.render_deepdream(self.__layer, frame, self.__iterations)
-                # frame = dream_generator2.render_deepdream(self.__layer, frame, self.__iterations)
                 self.__handle_dream(frame, camera.convert_to_jpeg(frame))
 
             if self.__show_count_down:
@@ -110,7 +117,8 @@ class ViewModel(object):
         self.__save_dream(frame_dream_jpg, self.__layer, self.__iterations)
 
         self.__start_dream, self.__is_locked = False, False
-        self.__show_general, self.__is_image_upload = False, False
+        self.__is_first_reset = False
+        self.__show_general = False
         self.__show_dream = True
 
     def __count_down(self, start_time, count, camera, frame):
@@ -144,13 +152,13 @@ class ViewModel(object):
         file_io.save_exif_file(userdata)
 
     def __init__(self):
-        print("INIT __INIT__")
         self.__show_general = True
 
         self.__show_dream = False
         self.__show_count_down = False
         self.__start_dream = False
         self.__is_image_upload = False
+        self.__is_first_reset = False
 
         self.__is_locked = False
 
@@ -163,12 +171,6 @@ class ViewModel(object):
         self.__layer = ""
         self.__camera = VideoCamera()
         init_slideshow()
-
-        self.__dream_generator = Dream('resources/app_data/inception')
-        print(self.__dream_generator)
-        self.__layers = self.__dream_generator.get_featured_layers()
-        self.__all_layers = self.__dream_generator.get_all_layers()
-        self.__default_layer = self.__dream_generator.get_default_layer()
 
 
 vm = ViewModel()
