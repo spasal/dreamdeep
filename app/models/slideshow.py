@@ -3,7 +3,7 @@ import time
 
 
 __frames = []
-__count_time = 4
+__count_time = 2
 __start_time = ""
 __index = 0
 

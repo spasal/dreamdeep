@@ -3,8 +3,7 @@ __pycache__/
 *.py[cod]
 *.pyc
 
-env/lib/python3.5/site-packages/*
-env/lib64/python3.5/site-packages/*
+venv/*
 z_extra/ignore/*
 z_extra/tests/*
 z_extra/todo/*
