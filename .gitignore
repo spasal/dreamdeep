@@ -6,7 +6,7 @@ __pycache__/
 venv/*
 # z_extra/ignore/*
 z_extra/tests/*
-# z_extra/todo/*
+z_extra/todo/*
 .vscode/*
 
 resources/app_data/inception/*
