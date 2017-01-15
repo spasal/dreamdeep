@@ -1,0 +1,37 @@
+# graphic driver CUDA + CuDDN + TF GPU
+use ubuntu's proprietary driver
+https://alliseesolutions.wordpress.com/2016/09/08/install-gpu-tensorflow-from-sources-w-ubuntu-16-04-and-cuda-8-0-rc/
+
+
+# opencv installation
+activate your environment, use these 2 links (update will come later)
+http://cyaninfinite.com/tutorials/installing-opencv-in-ubuntu-for-python-3/
+http://www.pyimagesearch.com/2015/07/20/install-opencv-3-0-and-python-3-4-on-ubuntu/
+
+
+# env is suddenly corrupted
+no solution found
+
+
+# streaming video + not freezing application (threading)
+temporary fix;
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8080, threaded=True)
+
+todo; geventlet for production
+
+
+# page reload --> opencv error
+hard-code in front-end that img src needs to be emptied --> opencv deletes camera object
+
+
+# tensorflow code
+can't reuse tf object, graphs are wrong.
+Tried a lot, not fixed. Only possible way is how it's now
+
+
+# REUSE VM GENERATOR FOR MULTIPLE CLIENTS	
+can not fix. All client's should use the same generator object, instead is it created every time.
+--> multiple clients while dreaming
+--> appliation crashes because dream is happening for x clients
+--> TF GPUs out of sync
